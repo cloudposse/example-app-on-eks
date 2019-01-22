@@ -10,7 +10,9 @@ RUN cd /src && \
 # Build the final image
 FROM alpine:3.8 as final
 
-RUN apk add --update curl make bash
+# Install the cloudposse alpine repository
+ADD https://apk.cloudposse.com/ops@cloudposse.com.rsa.pub /etc/apk/keys/
+RUN echo "@cloudposse https://apk.cloudposse.com/3.8/vendor" >> /etc/apk/repositories
 
 # Expose port of the app
 EXPOSE 8080
