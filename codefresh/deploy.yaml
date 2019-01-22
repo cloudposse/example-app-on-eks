@@ -37,7 +37,7 @@ steps:
     title: "Deploy with helmfile"
     stage: "Deploy"
     image: "${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}:${{CF_REVISION}}"
-    working_directory: /conf/
+    working_directory: /deploy/
     commands:
     # Announce the release version
     - "echo 'Preparing to deploy version ${{CF_RELEASE_TAG}}'"
@@ -47,10 +47,8 @@ steps:
     - "make init"
     # Install or upgrade tiller
     - "make helm/toolbox/upsert"
-    # Add kiam annotation
-    - "kubectl annotate namespace atlantis 'iam.amazonaws.com/permitted=${{ATLANTIS_IAM_ROLE}}' --overwrite"
     # Deploy chart to cluster using helmfile
-    - "helmfile --namespace ${{NAMESPACE}} --selector name=${{NAMESPACE}} sync"
+    - "helmfile --namespace ${{NAMESPACE}} --selector color=${{NAMESPACE}} sync"
 
   set_github_deployment_status_to_success:
     title: Set GitHub deployment status to "success"
