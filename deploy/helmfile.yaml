@@ -1,0 +1,3 @@
+# Ordered list of releases. 
+helmfiles:
+  - "releases/blue.yaml"
