@@ -10,7 +10,7 @@ RUN cd /src && \
 # Build the final image
 FROM alpine:3.8 as final
 
-RUN apk add --update curl make
+RUN apk add --update curl make bash
 
 # Expose port of the app
 EXPOSE 8080
