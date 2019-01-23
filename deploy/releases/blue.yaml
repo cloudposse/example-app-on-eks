@@ -15,7 +15,6 @@ releases:
 #   - https://github.com/cloudposse/charts/blob/master/incubator/monochart
 #
 - name: "blue-example"
-  namespace: "example"
   labels:
     color: "blue"
   chart: "cloudposse-incubator/monochart"
@@ -92,8 +91,8 @@ releases:
 
       resources:
         requests:
-          memory: 1Gi
+          memory: 10Mi
           cpu: 100m
         limits:
-          memory: 1Gi
+          memory: 10Mi
           cpu: 100m

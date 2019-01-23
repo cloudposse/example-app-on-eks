@@ -21,20 +21,22 @@ func main() {
 	})
 
 	// Take one for the team
-	http.HandleFunc("/die", func(w http.ResponseWriter, r *http.Request) {
+	boom, _ := ioutil.ReadFile("public/boom.html")
+	http.HandleFunc("/boom", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, string(boom))
 		fmt.Printf("Goodbye\n")
-		die()
+		//die()
 	})
 
 	// Dashboard
-	dashboard, _ := ioutil.ReadFile("dashboard.html")
+	dashboard, _ := ioutil.ReadFile("public/dashboard.html")
 	http.HandleFunc("/dashboard", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, string(dashboard))
 		fmt.Printf("GET %s\n", r.URL.Path)
 	})
 
 	// Default
-	index, _ := ioutil.ReadFile("index.html")
+	index, _ := ioutil.ReadFile("public/index.html")
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		count += 1
 		fmt.Fprintf(w, string(index), c, count)

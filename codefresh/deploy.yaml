@@ -48,7 +48,7 @@ steps:
     # Install or upgrade tiller
     - "make helm/toolbox/upsert"
     # Deploy chart to cluster using helmfile
-    - "helmfile --namespace ${{NAMESPACE}} --selector color=${{NAMESPACE}} sync"
+    - "helmfile --namespace ${{NAMESPACE}} --selector color=blue sync"
 
   set_github_deployment_status_to_success:
     title: Set GitHub deployment status to "success"
