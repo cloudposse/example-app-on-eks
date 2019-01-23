@@ -24,7 +24,7 @@ releases:
         pullPolicy: Always
         pullSecrets:
           - "pull-secret"
-      replicaCount: 10
+      replicaCount: 2
       # Deployment configuration
       deployment:
         enabled: true
@@ -80,7 +80,7 @@ releases:
             port: default
             scheme: HTTP
           periodSeconds: 5
-          initialDelaySeconds: 0
+          initialDelaySeconds: 2
           timeoutSeconds: 5
           successThreshold: 1
           failureThreshold: 3
@@ -92,8 +92,8 @@ releases:
             path: /healthz
             port: default
             scheme: HTTP
-          periodSeconds: 3
-          initialDelaySeconds: 0
+          periodSeconds: 5
+          initialDelaySeconds: 2
           timeoutSeconds: 5
           successThreshold: 1
           failureThreshold: 2
