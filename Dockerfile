@@ -22,7 +22,7 @@ WORKDIR /app
 
 # Copy the helmfile deployment configuration
 COPY deploy/ /deploy/
-COPY *.html /app/
+COPY public/ /app/public/
 
 # Install the app
 COPY --from=builder /src/example-app /app/
