@@ -1,0 +1,57 @@
+#!/usr/bin/env variant
+# vim:set ft=yaml
+tasks:
+  deps:
+    description: "Install alpine dependencies"
+    script: |
+      apk add --update curl make bash git kubectl@cloudposse helm@cloudposse helmfile@cloudposse
+
+  color:
+    description: "Lookup the current color"
+
+    parameters:
+    - name: config
+      default: ".color"
+      description: "Config file that keeps track of the current color"
+
+    script: |
+      config=${CF_VOLUME_PATH:-.}/{{ get "config" }}
+      if [ -f ${config} ]; then
+        cat ${config}
+      else
+        echo "blue" | tee ${config}
+      fi
+  blue-green:
+    description: "Trigger a blue-green deployment"
+
+    parameters:
+    - name: namespace
+      default: "default"
+      description: "Kubernetes namespace"
+   
+    - name: config
+      default: ".color"
+      description: "Config file that keeps track of the current color"
+
+    - name: color
+      type: string
+      description: "Selected color to deploy"
+
+    - name: blue
+      type: string
+      default: green
+      description: "Flip blue color to this color"
+
+    - name: green
+      type: string
+      default: blue
+      description: "Flip green color to this color"
+  
+    script: |
+      config=${CF_VOLUME_PATH:-.}/{{ get "config" }}
+      cur_color={{ get "color" }}
+      new_color={{ get "color" | get }}
+      echo "Updating {{ get "namespace" }}: $cur_color => $new_color"
+      echo "$new_color" > ${config}
+      export COLOR=$new_color
+      helmfile --namespace {{ get "namespace" }} sync
