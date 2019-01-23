@@ -59,7 +59,6 @@ tasks:
 
     steps:
     - task: deps
-    - task: istio-injection
     - script: |
         config=${CF_VOLUME_PATH:-.}/{{ get "config" }}
         cur_color={{ get "color" }}
