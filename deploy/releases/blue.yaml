@@ -4,17 +4,11 @@ repositories:
   url: "https://charts.cloudposse.com/incubator/"
 
 releases:
-
-#######################################################################################
-## Atlantis                                                                          ##
-#######################################################################################
-
 #
 # References:
-#   - https://github.com/cloudposse/atlantis/tree/master/helm/atlantis
 #   - https://github.com/cloudposse/charts/blob/master/incubator/monochart
 #
-- name: "blue-example"
+- name: "example-blue"
   labels:
     color: "blue"
   chart: "cloudposse-incubator/monochart"
@@ -23,13 +17,13 @@ releases:
   force: true
   recreatePods: false
   values:
-    - fullnameOverride: atlantis
+    - fullnameOverride: "example-blue"
       image:
         repository: '{{ env "IMAGE_NAME" | default "cloudposse/example-app" }}'
         tag: '{{ env "IMAGE_TAG" | default "0.1.0" }}'
         pullPolicy: Always
         pullSecrets:
-          - 'atlantis-pull-secret-dockercfg'
+          - "pull-secret"
 
       configMaps:
         default:
@@ -57,14 +51,14 @@ releases:
             external-dns.alpha.kubernetes.io/target: '{{ requiredEnv "NGINX_INGRESS_HOSTNAME" }}'
             external-dns.alpha.kubernetes.io/ttl: "60"
           hosts:
-            ### Required: ATLANTIS_HOSTNAME;
-            '{{ env "ATLANTIS_HOSTNAME" }}': /
+            ### Required: APP_HOSTNAME;
+            '{{ env "APP_HOSTNAME" }}': /
           tls:
               ### Optional: ATLANTIS_TLS_SECRET_NAME;
-            - secretName: '{{ env "ATLANTIS_TLS_SECRET_NAME" | default "atlantis-server-tls" }}'
+            - secretName: '{{ env "APP_TLS_SECRET_NAME" | default "example-blue-server-tls" }}'
               hosts:
-              ### Required: ATLANTIS_HOSTNAME;
-              - '{{ env "ATLANTIS_HOSTNAME" }}'
+              ### Required: APP_HOSTNAME;
+              - '{{ env "APP_HOSTNAME" }}'
       
       probes:
         livenessProbe:
