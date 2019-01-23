@@ -6,14 +6,7 @@ parameters:
   default: .color
   description: "Config file that keeps track of the current color"
 
-options:
-- name: debug
-  default: boolean
-  default: false
-  description: "Enable debug mode"
-
 tasks:
-
   deps:
     description: "Install alpine dependencies"
     script: |
