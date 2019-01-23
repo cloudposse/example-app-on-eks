@@ -24,7 +24,17 @@ releases:
         pullPolicy: Always
         pullSecrets:
           - "pull-secret"
+      replicaCount: 2
+      # Deployment configuration
+      deployment:
+        enabled: true
+        strategy:
+          type: "RollingUpdate"
+          rollingUpdate:
+            maxUnavailable: 0
+        revisionHistoryLimit: 10
 
+      # Configuration Settings
       configMaps:
         default:
           enabled: true
@@ -32,6 +42,7 @@ releases:
             # Color to deploy
             COLOR: "cyan"
 
+      # Service endpoint 
       service:
         enabled: true
         type: ClusterIP
