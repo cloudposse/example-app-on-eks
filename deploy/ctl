@@ -23,6 +23,11 @@ tasks:
     description: Enable Istio Sidecar Injection for a namespce
     script: |
       kubectl label namespace {{ get "namespace" }} istio-injection=enabled
+  
+  use-context:
+    description: "Configure kube-context"
+    script: |
+      kubectl config use-context ${KUBE_CONTEXT}
 
   deps:
     description: "Install alpine dependencies"
@@ -59,6 +64,8 @@ tasks:
 
     steps:
     - task: deps
+    - task: use-context
+    - task: istio-injection
     - script: |
         config=${CF_VOLUME_PATH:-.}/{{ get "config" }}
         cur_color={{ get "color" }}
