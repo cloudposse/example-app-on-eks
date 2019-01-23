@@ -7,6 +7,16 @@ parameters:
   description: "Config file that keeps track of the current color"
 
 tasks:
+
+  # https://istio.io/docs/tasks/traffic-management/ingress/#determining-the-ingress-ip-and-ports-when-using-an-external-load-balancer
+  ingress-host:
+    script: |
+      kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+  # https://istio.io/docs/setup/kubernetes/quick-start/
+  istio-injection:
+    script: |
+      kubectl label namespace testing istio-injection=enabled
+
   deps:
     description: "Install alpine dependencies"
     script: |

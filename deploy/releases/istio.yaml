@@ -1,0 +1,54 @@
+repositories:
+# Cloud Posse incubator repo of helm charts
+- name: "kubernetes-incubator"
+  url: "https://kubernetes-charts-incubator.storage.googleapis.com"
+
+releases:
+#
+# References:
+#   - https://github.com/helm/charts/tree/master/incubator/raw
+#
+- name: 'example-{{ requiredEnv "COLOR" }}'
+  labels:
+    color: "{{ requiredEnv "COLOR" }}"
+  chart: "kubernetes-incubator/raw"
+  version: "0.1.0"
+  wait: true
+  force: true
+  recreatePods: false
+  values:
+    - resources:
+      # Istio Gateway
+      - apiVersion: networking.istio.io/v1alpha3
+        kind: Gateway
+        metadata:
+        name: example-app
+        spec:
+        selector:
+            # use istio default controller
+            istio: ingressgateway 
+        servers:
+        - port:
+            number: 80
+            name: http
+            protocol: HTTP
+            hosts:
+            - "{{ env "APP_HOSTNAME" }}"
+
+      # Istio Virtual Service
+      - apiVersion: networking.istio.io/v1alpha3
+        kind: VirtualService
+        metadata:
+          name: example-app
+        spec:
+          hosts:
+          - "{{ env "APP_HOSTNAME" }}"
+          gateways:
+          - example-app
+          http:
+          - route:
+            - destination:
+                host: example-{{ env "COLOR" }}
+                port:
+                  number: 80
+              weight: 100
