@@ -63,13 +63,13 @@ releases:
             external-dns.alpha.kubernetes.io/ttl: "60"
           hosts:
             ### Required: APP_HOSTNAME;
-            '{{ env "APP_HOSTNAME" }}': /
+            'blue.{{ env "APP_HOSTNAME" }}': /
           tls:
               ### Optional: ATLANTIS_TLS_SECRET_NAME;
             - secretName: '{{ env "APP_TLS_SECRET_NAME" | default "example-blue-server-tls" }}'
               hosts:
               ### Required: APP_HOSTNAME;
-              - '{{ env "APP_HOSTNAME" }}'
+              - 'blue.{{ env "APP_HOSTNAME" }}'
       
       probes:
         livenessProbe:
