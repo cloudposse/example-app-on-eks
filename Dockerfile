@@ -13,7 +13,7 @@ FROM alpine:3.8 as final
 # Install the cloudposse alpine repository
 ADD https://apk.cloudposse.com/ops@cloudposse.com.rsa.pub /etc/apk/keys/
 RUN echo "@cloudposse https://apk.cloudposse.com/3.8/vendor" >> /etc/apk/repositories
-RUN apk add --update variant@cloudposse
+RUN apk add --update bash variant@cloudposse
 
 # Expose port of the app
 EXPOSE 8080
