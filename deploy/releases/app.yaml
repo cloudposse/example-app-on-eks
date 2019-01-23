@@ -40,8 +40,8 @@ releases:
           enabled: true
           env:
             # Color to deploy
-            #COLOR: "#0099ff" # Blue
-            COLOR: "#009900"  # Green
+            COLOR: "#0099ff" # Blue
+            #COLOR: "#009900"  # Green
 
       # Service endpoint 
       service:

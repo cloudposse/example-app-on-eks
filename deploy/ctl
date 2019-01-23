@@ -72,7 +72,7 @@ tasks:
         new_color={{ get "color" | get }}
         echo "Config file is ${config}"
         echo "Updating [${KUBE_CONTEXT}] context {{ get "namespace" }} namespace: $cur_color => $new_color"
-        echo "$new_color" > ${config}
         export COLOR=$new_color
         # Deploy the app and update istio virtual service
         helmfile --namespace {{ get "namespace" }} sync
+        echo "$new_color" > ${config}
