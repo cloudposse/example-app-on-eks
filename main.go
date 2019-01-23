@@ -17,7 +17,6 @@ func main() {
 	// Healthcheck endpoint
 	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "OK")
-		fmt.Printf("GET %s\n", r.URL.Path)
 	})
 
 	// Take one for the team
