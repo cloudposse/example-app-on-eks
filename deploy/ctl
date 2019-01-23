@@ -22,7 +22,7 @@ tasks:
   istio-injection:
     description: Enable Istio Sidecar Injection for a namespce
     script: |
-      kubectl label namespace {{ get "namespace" }} istio-injection=enabled
+      kubectl label namespace {{ get "namespace" }} istio-injection=enabled --overwrite=true
   
   use-context:
     description: "Configure kube-context"
