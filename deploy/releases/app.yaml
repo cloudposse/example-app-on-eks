@@ -8,16 +8,16 @@ releases:
 # References:
 #   - https://github.com/cloudposse/charts/blob/master/incubator/monochart
 #
-- name: "example-blue"
+- name: 'example-{{ requiredEnv "COLOR" }}'
   labels:
-    color: "blue"
+    color: "{{ requiredEnv "COLOR" }}"
   chart: "cloudposse-incubator/monochart"
   version: "0.7.0"
   wait: true
   force: true
   recreatePods: false
   values:
-    - fullnameOverride: "example-blue"
+    - fullnameOverride: "example-{{ requiredEnv "COLOR" }}"
       image:
         repository: '{{ env "IMAGE_NAME" | default "cloudposse/example-app" }}'
         tag: '{{ env "IMAGE_TAG" | default "0.1.0" }}'
@@ -63,13 +63,13 @@ releases:
             external-dns.alpha.kubernetes.io/ttl: "60"
           hosts:
             ### Required: APP_HOSTNAME;
-            'blue.{{ env "APP_HOSTNAME" }}': /
+            '{{ requiredEnv "COLOR" }}.{{ env "APP_HOSTNAME" }}': /
           tls:
               ### Optional: ATLANTIS_TLS_SECRET_NAME;
-            - secretName: '{{ env "APP_TLS_SECRET_NAME" | default "example-blue-server-tls" }}'
+            - secretName: '{{ env "APP_TLS_SECRET_NAME" | default "example-{{ requiredEnv "COLOR" }}-server-tls" }}'
               hosts:
               ### Required: APP_HOSTNAME;
-              - 'blue.{{ env "APP_HOSTNAME" }}'
+              - '{{ requiredEnv "COLOR" }}.{{ env "APP_HOSTNAME" }}'
       
       probes:
         livenessProbe:
