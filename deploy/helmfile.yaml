@@ -1,0 +1,4 @@
+# Ordered list of releases. 
+helmfiles:
+  - "releases/app.yaml"
+  - "releases/istio.yaml"

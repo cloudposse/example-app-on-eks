@@ -1,2 +1,5 @@
 # example-app
-Example application for CI/CD demonstrations
+
+Example application for Codefresh CI/CD demonstrations.
+
+Contact <hello@cloudposse.com>
