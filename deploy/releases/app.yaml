@@ -24,7 +24,7 @@ releases:
         pullPolicy: Always
         pullSecrets:
           - "pull-secret"
-      replicaCount: 2
+      replicaCount: 5
       # Deployment configuration
       deployment:
         enabled: true
@@ -40,8 +40,9 @@ releases:
           enabled: true
           env:
             # Color to deploy
-            COLOR: "#0099ff" # Blue
+            #COLOR: "#0099ff" # Blue
             #COLOR: "#009900"  # Green
+            COLOR: "{{ env "COLOR" }}"
 
       # Service endpoint 
       service:
@@ -79,11 +80,11 @@ releases:
             path: /healthz
             port: default
             scheme: HTTP
-          periodSeconds: 5
-          initialDelaySeconds: 2
-          timeoutSeconds: 5
+          periodSeconds: 3
+          initialDelaySeconds: 3
+          timeoutSeconds: 3
           successThreshold: 1
-          failureThreshold: 3
+          failureThreshold: 2
           scheme: HTTP
         
         # Probe that ensures service has started
@@ -92,9 +93,9 @@ releases:
             path: /healthz
             port: default
             scheme: HTTP
-          periodSeconds: 5
-          initialDelaySeconds: 2
-          timeoutSeconds: 5
+          periodSeconds: 3
+          initialDelaySeconds: 3
+          timeoutSeconds: 3
           successThreshold: 1
           failureThreshold: 2
 

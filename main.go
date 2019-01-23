@@ -24,7 +24,7 @@ func main() {
 	http.HandleFunc("/boom", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, string(boom))
 		fmt.Printf("Goodbye\n")
-		//die()
+		os.Exit(0)
 	})
 
 	// Dashboard
@@ -43,8 +43,4 @@ func main() {
 	})
 
 	http.ListenAndServe(":8080", nil)
-}
-
-func die() {
-	os.Exit(3)
 }
