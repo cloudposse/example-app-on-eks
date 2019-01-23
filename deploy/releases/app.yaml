@@ -24,14 +24,14 @@ releases:
         pullPolicy: Always
         pullSecrets:
           - "pull-secret"
-      replicaCount: 2
+      replicaCount: 10
       # Deployment configuration
       deployment:
         enabled: true
         strategy:
           type: "RollingUpdate"
           rollingUpdate:
-            maxUnavailable: 0
+            maxUnavailable: 2
         revisionHistoryLimit: 10
 
       # Configuration Settings
@@ -40,7 +40,8 @@ releases:
           enabled: true
           env:
             # Color to deploy
-            COLOR: "cyan"
+            #COLOR: "#0099ff" # Blue
+            COLOR: "#009900"  # Green
 
       # Service endpoint 
       service:
@@ -72,27 +73,30 @@ releases:
               - '{{ requiredEnv "COLOR" }}.{{ env "APP_HOSTNAME" }}'
       
       probes:
+        # Probe that ensures service is healthy
         livenessProbe:
           httpGet:
             path: /healthz
             port: default
             scheme: HTTP
-          periodSeconds: 60
-          initialDelaySeconds: 5
+          periodSeconds: 5
+          initialDelaySeconds: 0
           timeoutSeconds: 5
           successThreshold: 1
-          failureThreshold: 5
+          failureThreshold: 3
           scheme: HTTP
+        
+        # Probe that ensures service has started
         readinessProbe:
           httpGet:
             path: /healthz
             port: default
             scheme: HTTP
-          periodSeconds: 60
-          initialDelaySeconds: 10
+          periodSeconds: 3
+          initialDelaySeconds: 0
           timeoutSeconds: 5
           successThreshold: 1
-          failureThreshold: 5
+          failureThreshold: 2
 
       resources:
         requests:
