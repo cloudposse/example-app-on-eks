@@ -24,7 +24,7 @@ func main() {
 	http.HandleFunc("/boom", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, string(boom))
 		fmt.Printf("Goodbye\n")
-		die()
+		//die()
 	})
 
 	// Dashboard
