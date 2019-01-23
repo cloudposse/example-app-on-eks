@@ -6,21 +6,29 @@ parameters:
   default: .color
   description: "Config file that keeps track of the current color"
 
+- name: namespace
+  default: "default"
+  description: "Kubernetes namespace"
+
 tasks:
 
   # https://istio.io/docs/tasks/traffic-management/ingress/#determining-the-ingress-ip-and-ports-when-using-an-external-load-balancer
-  ingress-host:
+  istio-ingress:
+    description: Output the FQHN of the Istio Ingress Gateway
     script: |
-      kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+      kubectl --namespace istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+
   # https://istio.io/docs/setup/kubernetes/quick-start/
   istio-injection:
+    description: Enable Istio Sidecar Injection for a namespce
     script: |
-      kubectl label namespace testing istio-injection=enabled
+      kubectl label namespace {{ get "namespace" }} istio-injection=enabled
 
   deps:
     description: "Install alpine dependencies"
     script: |
       ! which apk >/dev/null || apk add --update curl make bash git kubectl@cloudposse helm@cloudposse helmfile@cloudposse
+      helm init --client-only
 
   color:
     description: "Lookup the current color"
@@ -34,12 +42,7 @@ tasks:
 
   blue-green:
     description: "Trigger a blue-green deployment"
-
     parameters:
-    - name: namespace
-      default: "default"
-      description: "Kubernetes namespace"
-
     - name: color
       type: string
       description: "Selected color to deploy"
@@ -56,6 +59,7 @@ tasks:
 
     steps:
     - task: deps
+    - task: istio-injection
     - script: |
         config=${CF_VOLUME_PATH:-.}/{{ get "config" }}
         cur_color={{ get "color" }}
@@ -64,4 +68,5 @@ tasks:
         echo "Updating {{ get "namespace" }}: $cur_color => $new_color"
         echo "$new_color" > ${config}
         export COLOR=$new_color
+        # Deploy the app and update istio virtual service
         helmfile --namespace {{ get "namespace" }} sync
