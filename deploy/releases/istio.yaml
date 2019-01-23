@@ -8,9 +8,7 @@ releases:
 # References:
 #   - https://github.com/helm/charts/tree/master/incubator/raw
 #
-- name: 'example-{{ requiredEnv "COLOR" }}'
-  labels:
-    color: "{{ requiredEnv "COLOR" }}"
+- name: 'example-istio'
   chart: "kubernetes-incubator/raw"
   version: "0.1.0"
   wait: true
