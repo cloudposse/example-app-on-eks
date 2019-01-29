@@ -40,15 +40,10 @@ steps:
     working_directory: /deploy/
     commands:
     # Announce the release version
-    - "echo 'Preparing to deploy version ${{CF_RELEASE_TAG}}'"
-    # Fetch the build-harness
-    - "curl -sSL -o Makefile https://git.io/build-harness"
-    # Initialize the build-harness
-    - "make init"
-    # Install or upgrade tiller
-    - "make helm/toolbox/upsert"
-    # Deploy chart to cluster using helmfile
-    - "helmfile --namespace ${{NAMESPACE}} --selector color=blue sync"
+    - "echo 'Preparing to deploy ${{CF_REPO_NAME}}:${{CF_RELEASE_TAG}}'"
+    - echo dev > .ctlenv
+    # Deploy chart to cluster
+    - "/deploy/ctl --namespace=${{NAMESPACE}} blue-green"
 
   set_github_deployment_status_to_success:
     title: Set GitHub deployment status to "success"
