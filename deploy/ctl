@@ -47,10 +47,13 @@ tasks:
 
   rolling:
     description: "Trigger a standard rolling deployment without istio"
+
+    parameters:
     - name: color
       type: string
       default: "black"
       description: "Selected color to deploy"
+
     steps:
     - task: deps
     - task: use-context
