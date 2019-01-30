@@ -61,7 +61,7 @@ tasks:
         export COLOR={{ get "color" }}
         echo "Updating [${KUBE_CONTEXT}] context {{ get "namespace" }} namespace with color=${COLOR}"
         # Deploy the app and update istio virtual service
-        helmfile --namespace {{ get "namespace" }} --selector name=${RELEASE_NAME} sync
+        helmfile --namespace {{ get "namespace" }} --selector pull-request=true sync
 
   blue-green:
     description: "Trigger a blue-green deployment"
