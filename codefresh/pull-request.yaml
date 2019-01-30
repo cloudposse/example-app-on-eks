@@ -1,0 +1,107 @@
+version: '1.0'
+
+stages:
+- Prepare
+- Build
+- Push
+- Deploy
+
+steps:
+  main_clone:
+    title: "Clone repository"
+    type: git-clone
+    stage: Prepare
+    description: "Initialize"
+    repo: ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}
+    git: CF-default
+    revision: ${{CF_REVISION}}
+
+  export:
+    title: Export Environment
+    stage: Prepare
+    image: alpine
+    commands:
+    - cf_export GIT_BRANCH=${{CF_BRANCH}}
+    - cf_export PROJECT=${{CF_REPO_NAME}}
+    - cf_export APP_NAME=${{CF_REPO_NAME}}
+    - cf_export CHART_NAME=monochart
+    - cf_export PIPELINE_ENV=integration
+    - cf_export NAMESPACE=pr-${{CF_PULL_REQUEST_NUMBER}}-${{CF_REPO_NAME}}
+    - cf_export RELEASE_NAME=pr-${{CF_PULL_REQUEST_NUMBER}}-${{CF_REPO_NAME}}
+    - cf_export APP_HOST=pr-${{CF_PULL_REQUEST_NUMBER}}.${{CF_REPO_NAME}}.${{BASE_HOST}}
+    - cf_export IMAGE_NAME=${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
+    - cf_export IMAGE_TAG=${{CF_REVISION}}
+
+  build_image:
+    title: Build image
+    stage: Build
+    type: build
+    description: Build app
+    image_name: ${{CF_REPO_NAME}}
+    dockerfile: Dockerfile
+    no_cache: false
+    no_cf_cache: false
+
+  push_image_commit:
+    title: Push image with commit tag
+    stage: Push
+    type: push
+    candidate: ${{build_image}}
+    tags:
+    - "${{CF_REVISION}}"
+
+  set_github_deployment_status_to_pending:
+    title: Set GitHub deployment status to "pending"
+    stage: Deploy
+    image: cloudposse/github-status-updater
+    environment:
+    - GITHUB_ACTION=update_state
+    - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+    - GITHUB_OWNER=${{CF_REPO_OWNER}}
+    - GITHUB_REPO=${{CF_REPO_NAME}}
+    - GITHUB_REF=${{CF_REVISION}}
+    - GITHUB_CONTEXT=Staging Environment
+    - GITHUB_STATE=pending
+    - GITHUB_DESCRIPTION=Deploying changes to ${{NAMESPACE}} namespace
+    - GITHUB_TARGET_URL=http://${{APP_HOST}}
+    when:
+      condition:
+        all:
+          githubNotificationsEnabled: "'${{GITHUB_NOTIFICATIONS_ENABLED}}' == 'true'"
+
+  deploy_helmfile:
+    title: Deploy with helmfile
+    stage: Deploy
+    image: "${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}:${{CF_REVISION}}"
+    working_directory: /deploy/
+    commands:
+    # Announce the release version
+    - "echo 'Preparing to deploy ${{CF_REPO_NAME}}:${{CF_RELEASE_TAG}}'"
+    # Deploy chart to cluster in a dedicated namespace
+    - "/deploy/ctl --namespace=${{NAMESPACE}} rolling"
+
+  set_github_deployment_status_to_success:
+    title: Set GitHub deployment status to "success"
+    stage: Deploy
+    image: cloudposse/github-status-updater
+    environment:
+    - GITHUB_ACTION=update_state
+    - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+    - GITHUB_OWNER=${{CF_REPO_OWNER}}
+    - GITHUB_REPO=${{CF_REPO_NAME}}
+    - GITHUB_REF=${{CF_REVISION}}
+    - GITHUB_CONTEXT=Staging Environment
+    - GITHUB_STATE=success
+    - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} namespace
+    - GITHUB_TARGET_URL=http://${{APP_HOST}}
+    when:
+      condition:
+        all:
+          githubNotificationsEnabled: "'${{GITHUB_NOTIFICATIONS_ENABLED}}' == 'true'"
+
+  send_slack_notification:
+    title: Send notification to Slack channel
+    stage: Deploy
+    image: cloudposse/build-harness:${{BUILD_HARNESS_VERSION}}
+    commands:
+    - make codefresh/notify/slack/deploy/webapp

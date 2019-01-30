@@ -42,8 +42,27 @@ tasks:
       if [ -f ${config} ]; then
         cat ${config}
       else
+        echo "Initializing as blue" >&2
         echo "blue" | tee ${config}
       fi
+
+  rolling:
+    description: "Trigger a standard rolling deployment without istio"
+
+    parameters:
+    - name: color
+      type: string
+      default: "black"
+      description: "Selected color to deploy"
+
+    steps:
+    - task: deps
+    - task: use-context
+    - script: |
+        export COLOR={{ get "color" }}
+        echo "Updating [${KUBE_CONTEXT}] context {{ get "namespace" }} namespace with color=${COLOR}"
+        # Deploy the app and update istio virtual service
+        helmfile --namespace {{ get "namespace" }} --selector pull-request=true sync
 
   blue-green:
     description: "Trigger a blue-green deployment"
@@ -73,6 +92,8 @@ tasks:
         echo "Config file is ${config}"
         echo "Updating [${KUBE_CONTEXT}] context {{ get "namespace" }} namespace: $cur_color => $new_color"
         export COLOR=$new_color
+        export APP_HOST=${COLOR}.example.${BASE_HOST}
+        export RELEASE_NAME=example-${COLOR}
         # Deploy the app and update istio virtual service
         helmfile --namespace {{ get "namespace" }} sync
         echo "$new_color" > ${config}

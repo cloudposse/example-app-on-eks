@@ -1,0 +1,17 @@
+version: '1.0'
+
+stages:
+- Destroy
+
+steps:
+  main_clone:
+    title: Destroy namespace
+    stage: Destroy
+    image: cloudposse/build-harness:${{BUILD_HARNESS_VERSION}}
+    working_directory: /build-harness/
+    environment:
+    - NAMESPACE=pr-${{CF_PULL_REQUEST_NUMBER}}-${{CF_REPO_NAME}}
+    commands:
+    - "kubectl config use-context ${{KUBE_CONTEXT}}"
+    - "make helm/delete/namespace"
+    - "make helm/delete/namespace/empty"

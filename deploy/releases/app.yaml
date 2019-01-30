@@ -8,9 +8,10 @@ releases:
 # References:
 #   - https://github.com/cloudposse/charts/blob/master/incubator/monochart
 #
-- name: 'example-{{ requiredEnv "COLOR" }}'
+- name: '{{ requiredEnv "RELEASE_NAME" }}'
   labels:
     color: "{{ requiredEnv "COLOR" }}"
+    pull-request: "true"
   chart: "cloudposse-incubator/monochart"
   version: "0.7.0"
   wait: true
@@ -23,7 +24,7 @@ releases:
         tag: '{{ env "IMAGE_TAG" | default "0.1.0" }}'
         pullPolicy: Always
         pullSecrets:
-          - "pull-secret"
+          - "{{ requiredEnv "RELEASE_NAME" }}-pull-secret-dockercfg "
       replicaCount: 5
       # Deployment configuration
       deployment:
@@ -64,14 +65,14 @@ releases:
             external-dns.alpha.kubernetes.io/target: '{{ requiredEnv "NGINX_INGRESS_HOSTNAME" }}'
             external-dns.alpha.kubernetes.io/ttl: "60"
           hosts:
-            ### Required: APP_HOSTNAME;
-            '{{ requiredEnv "COLOR" }}.{{ env "APP_HOSTNAME" }}': /
+            ### Required: APP_HOST;
+            '{{ env "APP_HOST" }}': /
           tls:
               ### Optional: ATLANTIS_TLS_SECRET_NAME;
             - secretName: '{{ env "APP_TLS_SECRET_NAME" | default (requiredEnv "COLOR" | printf "example-%s-server-tls") }}'
               hosts:
-              ### Required: APP_HOSTNAME;
-              - '{{ requiredEnv "COLOR" }}.{{ env "APP_HOSTNAME" }}'
+              ### Required: APP_HOST;
+              - '{{ env "APP_HOST" }}'
       
       probes:
         # Probe that ensures service is healthy
