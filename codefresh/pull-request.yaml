@@ -75,10 +75,10 @@ steps:
     image: "${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}:${{CF_REVISION}}"
     working_directory: /deploy/
     commands:
-    # Install or upgrade tiller
-    - "make helm/toolbox/upsert"
-    # Deploy chart to cluster using helmfile (with chamber secrets)
-    - "helmfile --selector name=example-app sync"
+    # Announce the release version
+    - "echo 'Preparing to deploy ${{CF_REPO_NAME}}:${{CF_RELEASE_TAG}}'"
+    # Deploy chart to cluster
+    - "/deploy/ctl --namespace=${{NAMESPACE}} rolling"
 
   set_github_deployment_status_to_success:
     title: Set GitHub deployment status to "success"

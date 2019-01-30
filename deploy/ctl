@@ -45,6 +45,16 @@ tasks:
         echo "blue" | tee ${config}
       fi
 
+  rolling:
+    description: "Trigger a standard rolling deployment without istio"
+    steps:
+    - task: deps
+    - task: use-context
+    - script: |
+       echo "Updating [${KUBE_CONTEXT}] context {{ get "namespace" }} namespace"
+        # Deploy the app and update istio virtual service
+        helmfile --namespace {{ get "namespace" }} --selector name=${RELEASE_NAME} sync
+
   blue-green:
     description: "Trigger a blue-green deployment"
     parameters:
