@@ -24,7 +24,7 @@ releases:
         tag: '{{ env "IMAGE_TAG" | default "0.1.0" }}'
         pullPolicy: Always
         pullSecrets:
-          - "pull-secret"
+          - "{{ requiredEnv "RELEASE_NAME" }}-pull-secret-dockercfg "
       replicaCount: 5
       # Deployment configuration
       deployment:
