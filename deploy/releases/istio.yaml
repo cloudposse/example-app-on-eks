@@ -32,7 +32,7 @@ releases:
               name: http
               protocol: HTTP
             hosts:
-            - "{{ env "APP_HOST" }}"
+            - "{{ env "GATEWAY_HOST" }}"
 
       # Istio Virtual Service
       - apiVersion: networking.istio.io/v1alpha3
@@ -41,7 +41,7 @@ releases:
           name: example-app
         spec:
           hosts:
-          - "{{ env "APP_HOST" }}"
+          - "{{ env "GATEWAY_HOST" }}"
           gateways:
           - example-app
           http:

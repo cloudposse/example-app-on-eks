@@ -8,7 +8,7 @@ releases:
 # References:
 #   - https://github.com/cloudposse/charts/blob/master/incubator/monochart
 #
-- name: 'example-{{ requiredEnv "COLOR" }}'
+- name: '{{ requiredEnv "RELEASE_NAME" }}'
   labels:
     color: "{{ requiredEnv "COLOR" }}"
   chart: "cloudposse-incubator/monochart"
@@ -65,13 +65,13 @@ releases:
             external-dns.alpha.kubernetes.io/ttl: "60"
           hosts:
             ### Required: APP_HOST;
-            '{{ requiredEnv "COLOR" }}.{{ env "APP_HOST" }}': /
+            '{{ env "APP_HOST" }}': /
           tls:
               ### Optional: ATLANTIS_TLS_SECRET_NAME;
             - secretName: '{{ env "APP_TLS_SECRET_NAME" | default (requiredEnv "COLOR" | printf "example-%s-server-tls") }}'
               hosts:
               ### Required: APP_HOST;
-              - '{{ requiredEnv "COLOR" }}.{{ env "APP_HOST" }}'
+              - '{{ env "APP_HOST" }}'
       
       probes:
         # Probe that ensures service is healthy

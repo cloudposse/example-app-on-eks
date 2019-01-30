@@ -13,6 +13,9 @@ steps:
     - cf_export NAMESPACE=${{STAGE}}
     - cf_export IMAGE_NAME=${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     - cf_export IMAGE_TAG=${{CF_RELEASE_TAG}}
+    - cf_export APP_HOST=${{COLOR}}.example.${{BASE_HOST}}
+    - cf_export GATEWAY_HOST=example.${{BASE_HOST}}
+    - cf_export RELEASE_NAME=example-${{COLOR}}
 
   set_github_deployment_status_to_pending:
     title: Set GitHub deployment status to "pending"
@@ -41,7 +44,6 @@ steps:
     commands:
     # Announce the release version
     - "echo 'Preparing to deploy ${{CF_REPO_NAME}}:${{CF_RELEASE_TAG}}'"
-    - echo dev > .ctlenv
     # Deploy chart to cluster
     - "/deploy/ctl --namespace=${{NAMESPACE}} blue-green"
 

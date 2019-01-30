@@ -22,12 +22,13 @@ steps:
     image: alpine
     commands:
     - cf_export GIT_BRANCH=${{CF_BRANCH}}
-    - cf_export PROJECT=example
-    - cf_export APP_NAME=example
+    - cf_export PROJECT=${{CF_REPO_NAME}}
+    - cf_export APP_NAME=${{CF_REPO_NAME}}
     - cf_export CHART_NAME=monochart
     - cf_export PIPELINE_ENV=integration
     - cf_export NAMESPACE=pr-${{CF_PULL_REQUEST_NUMBER}}-${{CF_REPO_NAME}}
-    - cf_export APP_HOST=pr-${{CF_PULL_REQUEST_NUMBER}}-${{CF_REPO_NAME}}.${{BASE_HOST}}
+    - cf_export RELEASE_NAME=pr-${{CF_PULL_REQUEST_NUMBER}}-$${CF_REPO_NAME}}
+    - cf_export APP_HOST=pr-${{CF_PULL_REQUEST_NUMBER}}.${{CF_REPO_NAME}}.${{BASE_HOST}}
     - cf_export IMAGE_NAME=${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     - cf_export IMAGE_TAG=${{CF_REVISION}}
 
@@ -71,10 +72,8 @@ steps:
   deploy_helmfile:
     title: Deploy with helmfile
     stage: Deploy
-    image: cloudposse/build-harness:${{BUILD_HARNESS_VERSION}}
-    environment:
-    - IMAGE_TAG=${{SEMVERSION_COMMIT_SHORT}}
-    - RELEASE_NAME=${{NAMESPACE}}
+    image: "${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}:${{CF_REVISION}}"
+    working_directory: /deploy/
     commands:
     # Install or upgrade tiller
     - "make helm/toolbox/upsert"
