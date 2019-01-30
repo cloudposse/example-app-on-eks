@@ -77,7 +77,7 @@ steps:
     commands:
     # Announce the release version
     - "echo 'Preparing to deploy ${{CF_REPO_NAME}}:${{CF_RELEASE_TAG}}'"
-    # Deploy chart to cluster
+    # Deploy chart to cluster in a dedicated namespace
     - "/deploy/ctl --namespace=${{NAMESPACE}} rolling"
 
   set_github_deployment_status_to_success:
