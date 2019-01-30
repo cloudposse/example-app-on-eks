@@ -42,6 +42,7 @@ tasks:
       if [ -f ${config} ]; then
         cat ${config}
       else
+        echo "Initializing as blue" >&2
         echo "blue" | tee ${config}
       fi
 
