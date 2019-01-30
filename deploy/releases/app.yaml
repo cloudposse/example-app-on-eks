@@ -64,14 +64,14 @@ releases:
             external-dns.alpha.kubernetes.io/target: '{{ requiredEnv "NGINX_INGRESS_HOSTNAME" }}'
             external-dns.alpha.kubernetes.io/ttl: "60"
           hosts:
-            ### Required: APP_HOSTNAME;
-            '{{ requiredEnv "COLOR" }}.{{ env "APP_HOSTNAME" }}': /
+            ### Required: APP_HOST;
+            '{{ requiredEnv "COLOR" }}.{{ env "APP_HOST" }}': /
           tls:
               ### Optional: ATLANTIS_TLS_SECRET_NAME;
             - secretName: '{{ env "APP_TLS_SECRET_NAME" | default (requiredEnv "COLOR" | printf "example-%s-server-tls") }}'
               hosts:
-              ### Required: APP_HOSTNAME;
-              - '{{ requiredEnv "COLOR" }}.{{ env "APP_HOSTNAME" }}'
+              ### Required: APP_HOST;
+              - '{{ requiredEnv "COLOR" }}.{{ env "APP_HOST" }}'
       
       probes:
         # Probe that ensures service is healthy
