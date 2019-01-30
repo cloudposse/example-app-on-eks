@@ -14,26 +14,6 @@ steps:
     - cf_export IMAGE_NAME=${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     - cf_export IMAGE_TAG=${{CF_RELEASE_TAG}}
     - cf_export GATEWAY_HOST=example.${{BASE_HOST}}
-    - cf_export RELEASE_NAME=example-${{COLOR}}
-
-  set_github_deployment_status_to_pending:
-    title: Set GitHub deployment status to "pending"
-    stage: Deploy
-    image: cloudposse/github-status-updater
-    environment:
-    - GITHUB_ACTION=update_state
-    - GITHUB_TOKEN=${{GITHUB_TOKEN}}
-    - GITHUB_OWNER=${{CF_REPO_OWNER}}
-    - GITHUB_REPO=${{CF_REPO_NAME}}
-    - GITHUB_REF=${{CF_REVISION}}
-    - GITHUB_CONTEXT=${{STAGE}}-environment
-    - GITHUB_STATE=pending
-    - GITHUB_DESCRIPTION=Deploying changes to ${{NAMESPACE}} namespace
-    - GITHUB_TARGET_URL=${{ATLANTIS_ATLANTIS_URL}}
-    when:
-      condition:
-        all:
-          githubNotificationsEnabled: "'${{GITHUB_NOTIFICATIONS_ENABLED}}' == 'true'"
 
   deploy_helmfile:
     title: "Deploy with helmfile"
@@ -46,21 +26,3 @@ steps:
     # Deploy chart to cluster
     - "/deploy/ctl --namespace=${{NAMESPACE}} blue-green"
 
-  set_github_deployment_status_to_success:
-    title: Set GitHub deployment status to "success"
-    stage: "Deploy"
-    image: cloudposse/github-status-updater
-    environment:
-    - GITHUB_ACTION=update_state
-    - GITHUB_TOKEN=${{GITHUB_TOKEN}}
-    - GITHUB_OWNER=${{CF_REPO_OWNER}}
-    - GITHUB_REPO=${{CF_REPO_NAME}}
-    - GITHUB_REF=${{CF_REVISION}}
-    - GITHUB_CONTEXT=${{STAGE}}-environment
-    - GITHUB_STATE=success
-    - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} namespace
-    - GITHUB_TARGET_URL=${{ATLANTIS_ATLANTIS_URL}}
-    when:
-      condition:
-        all:
-          githubNotificationsEnabled: "'${{GITHUB_NOTIFICATIONS_ENABLED}}' == 'true'"
