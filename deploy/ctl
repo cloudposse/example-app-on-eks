@@ -47,11 +47,16 @@ tasks:
 
   rolling:
     description: "Trigger a standard rolling deployment without istio"
+    - name: color
+      type: string
+      default: "black"
+      description: "Selected color to deploy"
     steps:
     - task: deps
     - task: use-context
     - script: |
-       echo "Updating [${KUBE_CONTEXT}] context {{ get "namespace" }} namespace"
+        export COLOR={{ get "color" }}
+        echo "Updating [${KUBE_CONTEXT}] context {{ get "namespace" }} namespace with color=${COLOR}"
         # Deploy the app and update istio virtual service
         helmfile --namespace {{ get "namespace" }} --selector name=${RELEASE_NAME} sync
 
