@@ -15,6 +15,10 @@ steps:
     - cf_export IMAGE_TAG=${{CF_RELEASE_TAG}}
     - cf_export GATEWAY_HOST=example.${{BASE_HOST}}
 
+  ask_for_permission:
+    type: pending-approval
+    title: Deploy release?
+
   deploy_helmfile:
     title: "Deploy with helmfile"
     stage: "Deploy"
@@ -25,4 +29,8 @@ steps:
     - "echo 'Preparing to deploy ${{CF_REPO_NAME}}:${{CF_RELEASE_TAG}}'"
     # Deploy chart to cluster
     - "/deploy/ctl --namespace=${{NAMESPACE}} blue-green"
-
+    when:
+      steps:
+      - name: ask_for_permission
+        on:
+        - approved

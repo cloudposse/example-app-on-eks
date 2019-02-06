@@ -5,6 +5,10 @@ stages:
 
 steps:
   main_clone:
+    type: pending-approval
+    title: Destory staging environment?
+
+  destroy:
     title: Destroy namespace
     stage: Destroy
     image: cloudposse/build-harness:${{BUILD_HARNESS_VERSION}}
@@ -15,3 +19,8 @@ steps:
     - "kubectl config use-context ${{KUBE_CONTEXT}}"
     - "make helm/delete/namespace"
     - "make helm/delete/namespace/empty"
+    when:
+      steps:
+      - name: main_clone
+        on:
+        - approved
