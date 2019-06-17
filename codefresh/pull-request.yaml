@@ -74,7 +74,7 @@ steps:
       condition:
         all:
           executeForDeploy: "'${{INTEGRATION_TESTS_ENABLED}}' == 'true'"
-0
+
   set_github_deployment_status_to_pending:
     title: Set GitHub deployment status to "pending"
     stage: Deploy
