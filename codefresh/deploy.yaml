@@ -19,6 +19,17 @@ steps:
     type: pending-approval
     title: Deploy release?
 
+  wait:
+    title: Wait
+    stage: Prepare
+    image: codefresh/cli:latest
+    commands:
+      - codefresh get builds --pipeline=deploy --status running --limit 1000 -o json | jq --arg id ${{CF_BUILD_ID}} -ser 'flatten|.[-1].id==$id'
+    retry:
+      maxAttempts: 10
+      delay: 20
+      exponentialFactor: 1.1
+
   deploy_helmfile:
     title: "Deploy with helmfile"
     stage: "Deploy"
