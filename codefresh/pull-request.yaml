@@ -72,6 +72,9 @@ steps:
       integration_tests:
         image: alpine:3.9
         command: codefresh/test/test.sh
+        volumes:
+          - '${{CF_VOLUME_NAME}}:${{CF_VOLUME_PATH}}'
+        working_dir: '${{CF_VOLUME_PATH}}'
     when:
       condition:
         all:
