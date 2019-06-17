@@ -67,9 +67,11 @@ steps:
     composition_candidates:
       app:
         image: ${{build_test}}
-        command: codefresh/test/test.sh
         env_file:
           - codefresh/test/test.env
+      integration_tests:
+        image: alpine:3.9
+        command: codefresh/test/test.sh
     when:
       condition:
         all:

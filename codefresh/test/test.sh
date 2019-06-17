@@ -1,3 +1,9 @@
 #!/usr/bin/env bash
 
-curl http://localhost:8080/
+set -ex
+
+apk add curl
+
+sleep 3
+
+curl -fL http://localhost:8080/
