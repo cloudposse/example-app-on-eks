@@ -86,7 +86,6 @@ releases:
           timeoutSeconds: 3
           successThreshold: 1
           failureThreshold: 2
-          scheme: HTTP
         
         # Probe that ensures service has started
         readinessProbe:
