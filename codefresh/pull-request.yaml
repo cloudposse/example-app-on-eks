@@ -71,7 +71,8 @@ steps:
           - codefresh/test/test.env
       integration_tests:
         image: alpine:3.9
-        command: codefresh/test/test.sh
+#        command: codefresh/test/test.sh
+        command: "pwd && ls -al"
         volumes:
           - '${{CF_VOLUME_NAME}}:${{CF_VOLUME_PATH}}'
         working_dir: '${{CF_VOLUME_PATH}}'
