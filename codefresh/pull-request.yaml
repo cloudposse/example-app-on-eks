@@ -56,7 +56,7 @@ steps:
         when:
           condition:
             all:
-              executeForDeploy: "'${{INTEGRATION_TESTS_ENABLED}}' == 'true'"
+              testsEnabled: "'${{INTEGRATION_TESTS_ENABLED}}' == 'true'"
 
   test:
     title: "Run tests"
@@ -73,7 +73,7 @@ steps:
     when:
       condition:
         all:
-          executeForDeploy: "'${{INTEGRATION_TESTS_ENABLED}}' == 'true'"
+          testsEnabled: "'${{INTEGRATION_TESTS_ENABLED}}' == 'true'"
 
   set_github_deployment_status_to_pending:
     title: Set GitHub deployment status to "pending"
