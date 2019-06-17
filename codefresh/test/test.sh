@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 set -ex
 
-apk add curl
+apk add --update curl
 
 sleep 3
 
