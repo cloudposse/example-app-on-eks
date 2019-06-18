@@ -98,6 +98,7 @@ steps:
     when:
       condition:
         all:
+          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"
           githubNotificationsEnabled: "'${{GITHUB_NOTIFICATIONS_ENABLED}}' == 'true'"
 
   push_image_commit:
@@ -107,6 +108,21 @@ steps:
     candidate: ${{build_image}}
     tags:
     - "${{CF_REVISION}}"
+
+  wait:
+    title: Wait
+    stage: Deploy
+    image: codefresh/cli:latest
+    commands:
+      - codefresh get builds --pipeline=deploy-${{STAGE}} --status running --limit 1000 -o json | jq --arg id ${{CF_BUILD_ID}} -ser 'flatten|.[-1].id==$id'
+    retry:
+      maxAttempts: 10
+      delay: 20
+      exponentialFactor: 1.1
+    when:
+      condition:
+        any:
+          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"
 
   deploy_helmfile:
     title: Deploy with helmfile
@@ -118,6 +134,10 @@ steps:
     - "echo 'Preparing to deploy ${{CF_REPO_NAME}}:${{CF_RELEASE_TAG}}'"
     # Deploy chart to cluster in a dedicated namespace
     - "/deploy/ctl --namespace=${{NAMESPACE}} rolling"
+    when:
+      condition:
+        any:
+          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"
 
   set_github_deployment_status_to_success:
     title: Set GitHub deployment status to "success"
@@ -136,6 +156,7 @@ steps:
     when:
       condition:
         all:
+          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"
           githubNotificationsEnabled: "'${{GITHUB_NOTIFICATIONS_ENABLED}}' == 'true'"
 
   send_slack_notification:
@@ -151,4 +172,8 @@ steps:
       - GIT_BRANCH_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
     commands:
     - make codefresh/notify/slack/deploy/webapp GIT_COMMIT_TIMESTAMP=$((${{CF_BUILD_TIMESTAMP}}/1000))
+    when:
+      condition:
+        any:
+          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"
 
