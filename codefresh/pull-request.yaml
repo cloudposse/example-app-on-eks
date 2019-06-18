@@ -67,11 +67,14 @@ steps:
     composition_candidates:
       app:
         image: ${{build_test}}
+        command: "true"
         env_file:
           - codefresh/test/test.env
       integration_tests:
         image: alpine:3.9
         command: codefresh/test/test.sh
+        env_file:
+          - codefresh/test/test.env
         volumes:
           - '${{CF_VOLUME_NAME}}:${{CF_VOLUME_PATH}}'
         working_dir: '${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}'
