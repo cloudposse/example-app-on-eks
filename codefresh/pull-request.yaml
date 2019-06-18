@@ -142,5 +142,6 @@ steps:
     title: Send notification to Slack channel
     stage: Deploy
     image: cloudposse/build-harness:${{BUILD_HARNESS_VERSION}}
+    working_directory: /build-harness
     commands:
     - make codefresh/notify/slack/deploy/webapp

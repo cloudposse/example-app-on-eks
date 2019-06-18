@@ -51,6 +51,7 @@ steps:
     title: Send notification to Slack channel
     stage: Deploy
     image: cloudposse/build-harness:${{BUILD_HARNESS_VERSION}}
+    working_directory: /build-harness
     environment:
       - PIPELINE_ENV=${{STAGE}}
     commands:
