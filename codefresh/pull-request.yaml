@@ -3,7 +3,7 @@ version: '1.0'
 stages:
 - Prepare
 - Build
-- Push
+- Test
 - Deploy
 
 steps:
@@ -32,23 +32,54 @@ steps:
     - cf_export IMAGE_NAME=${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     - cf_export IMAGE_TAG=${{CF_REVISION}}
 
-  build_image:
-    title: Build image
+  build:
+    type: parallel
     stage: Build
-    type: build
-    description: Build app
-    image_name: ${{CF_REPO_NAME}}
-    dockerfile: Dockerfile
-    no_cache: false
-    no_cf_cache: false
+    steps:
+      build_image:
+        title: Build image
+        type: build
+        description: Build app
+        image_name: ${{CF_REPO_NAME}}
+        tag: ${{CF_SHORT_REVISION}}
+        dockerfile: Dockerfile
+        no_cache: false
+        no_cf_cache: false
 
-  push_image_commit:
-    title: Push image with commit tag
-    stage: Push
-    type: push
-    candidate: ${{build_image}}
-    tags:
-    - "${{CF_REVISION}}"
+      build_test:
+        title: "Build test image"
+        type: build
+        description: "Build test image"
+        dockerfile: Dockerfile
+        image_name: ${{CF_REPO_NAME}}
+        tag: ${{CF_SHORT_REVISION}}-test
+        when:
+          condition:
+            all:
+              testsEnabled: "'${{INTEGRATION_TESTS_ENABLED}}' == 'true'"
+
+  test:
+    title: "Run tests"
+    stage: Test
+    type: composition
+    fail_fast: true
+    # Run the docker-composition defined in the file
+    composition: codefresh/test/docker-compose.yml
+    # Run tests against the composition
+    composition_candidates:
+      app:
+        image: ${{build_test}}
+        entrypoint: /bin/sh -c
+        command: codefresh/test/test.sh
+        env_file:
+          - codefresh/test/test.env
+        volumes:
+          - '${{CF_VOLUME_NAME}}:${{CF_VOLUME_PATH}}'
+        working_dir: '${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}'
+    when:
+      condition:
+        all:
+          testsEnabled: "'${{INTEGRATION_TESTS_ENABLED}}' == 'true'"
 
   set_github_deployment_status_to_pending:
     title: Set GitHub deployment status to "pending"
@@ -68,6 +99,14 @@ steps:
       condition:
         all:
           githubNotificationsEnabled: "'${{GITHUB_NOTIFICATIONS_ENABLED}}' == 'true'"
+
+  push_image_commit:
+    title: Push image with commit tag
+    stage: Deploy
+    type: push
+    candidate: ${{build_image}}
+    tags:
+    - "${{CF_REVISION}}"
 
   deploy_helmfile:
     title: Deploy with helmfile
@@ -103,5 +142,13 @@ steps:
     title: Send notification to Slack channel
     stage: Deploy
     image: cloudposse/build-harness:${{BUILD_HARNESS_VERSION}}
+    working_directory: /build-harness
+    environment:
+      - GIT_COMMIT_SHORT=${{CF_SHORT_REVISION}}
+      - GIT_COMMIT_URL=${{CF_COMMIT_URL}}
+      - GIT_COMMIT_MESSAGE=${{CF_COMMIT_MESSAGE}}
+      - GIT_COMMIT_AUTHOR=${{CF_COMMIT_AUTHOR}}
+      - GIT_BRANCH_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
     commands:
-    - make codefresh/notify/slack/deploy/webapp
+    - make codefresh/notify/slack/deploy/webapp GIT_COMMIT_TIMESTAMP=$((${{CF_BUILD_TIMESTAMP}}/1000))
+

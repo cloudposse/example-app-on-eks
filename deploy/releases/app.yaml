@@ -13,7 +13,7 @@ releases:
     color: "{{ requiredEnv "COLOR" }}"
     pull-request: "true"
   chart: "cloudposse-incubator/monochart"
-  version: "0.7.0"
+  version: "0.12.0"
   wait: true
   force: true
   recreatePods: false
