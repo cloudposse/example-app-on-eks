@@ -46,3 +46,13 @@ steps:
       - name: ask_for_permission
         on:
         - approved
+
+  send_slack_notification:
+    title: Send notification to Slack channel
+    stage: Deploy
+    image: cloudposse/build-harness:${{BUILD_HARNESS_VERSION}}
+    environment:
+      - PIPELINE_ENV=${{STAGE}}
+    commands:
+    - make codefresh/notify/slack/deploy/webapp
+
