@@ -5,8 +5,20 @@ stages:
 
 steps:
   main_clone:
-    type: pending-approval
-    title: Destory staging environment?
+    title: Wait
+    stage: Destroy
+    image: codefresh/cli:latest
+    commands:
+      - codefresh get builds --pipeline=destroy --pipeline=pull-request --branch=${{CF_BRANCH}} --status running --limit 1000 -o json | jq --arg id ${{CF_BUILD_ID}} -ser 'flatten|.[-1].id==$id'
+    retry:
+      maxAttempts: 10
+      delay: 20
+      exponentialFactor: 1.1
+    when:
+      condition:
+        any:
+          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == false"
+          validatePRAction: "'${{CF_PULL_REQUEST_ACTION}}' == 'closed'"
 
   destroy:
     title: Destroy namespace
@@ -16,11 +28,13 @@ steps:
     environment:
     - NAMESPACE=pr-${{CF_PULL_REQUEST_NUMBER}}-${{CF_REPO_NAME}}
     commands:
+    - "apk add kubectl"
     - "kubectl config use-context ${{KUBE_CONTEXT}}"
     - "make helm/delete/namespace"
     - "make helm/delete/namespace/empty"
     when:
-      steps:
-      - name: main_clone
-        on:
-        - approved
+      condition:
+        any:
+          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == false"
+          validatePRAction: "'${{CF_PULL_REQUEST_ACTION}}' == 'closed'"
+
