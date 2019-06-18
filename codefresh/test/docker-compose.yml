@@ -1,7 +1,6 @@
 version: '3'
 services:
   app:
-    image: "${TEST_IMAGE}"
     environment:
       - "COLOR=#0099ff"
     ports:

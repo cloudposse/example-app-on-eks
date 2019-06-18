@@ -65,13 +65,11 @@ steps:
     fail_fast: true
     # Run the docker-composition defined in the file
     composition: codefresh/test/docker-compose.yml
-    # Pass in docker-compose variables (not environment variables)
-    composition_variables:
-      - "TEST_IMAGE=${{CF_REPO_NAME}}:${{CF_SHORT_REVISION}}-test"
     # Run tests against the composition
     composition_candidates:
-      integration_tests:
-        image: alpine:3.9
+      app:
+        image: ${{build_test}}
+        entrypoint: /bin/sh -c
         command: codefresh/test/test.sh
         env_file:
           - codefresh/test/test.env
