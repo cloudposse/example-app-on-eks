@@ -6,4 +6,4 @@ apk add --update curl
 
 sleep 3
 
-curl -fL http://localhost:8080/
+curl -fL http://app:8080/
