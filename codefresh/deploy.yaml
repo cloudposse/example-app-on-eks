@@ -18,6 +18,7 @@ steps:
   ask_for_permission:
     type: pending-approval
     title: Deploy release?
+    stage: Prepare
 
   wait:
     title: Wait
