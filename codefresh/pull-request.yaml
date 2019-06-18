@@ -144,4 +144,5 @@ steps:
     image: cloudposse/build-harness:${{BUILD_HARNESS_VERSION}}
     working_directory: /build-harness
     commands:
+    - export $(make git/export)
     - make codefresh/notify/slack/deploy/webapp
