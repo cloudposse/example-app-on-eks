@@ -15,7 +15,7 @@ Example application for Codefresh CI/CD demonstrations.
 
 * Blue/Green deployments with Istio
 * Deploy/Destroy environments only when labels added or removed
-* Github Status API Updates
+* GitHub Status API Updates
 * Slack Notifications
 * Approval Steps
 * Targeted Release Deployments using GitHub Releases
