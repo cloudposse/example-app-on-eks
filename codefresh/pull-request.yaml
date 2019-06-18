@@ -63,13 +63,13 @@ steps:
     stage: Test
     type: composition
     fail_fast: true
+    # Run the docker-composition defined in the file
     composition: codefresh/test/docker-compose.yml
+    # Pass in docker-compose variables (not environment variables)
+    composition_variables:
+      - "TEST_IMAGE=${{build_test}}"
+    # Run tests against the composition
     composition_candidates:
-      app:
-        image: ${{build_test}}
-        command: "true"
-        env_file:
-          - codefresh/test/test.env
       integration_tests:
         image: alpine:3.9
         command: codefresh/test/test.sh
