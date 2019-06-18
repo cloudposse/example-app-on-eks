@@ -6,4 +6,6 @@ apk add --update curl
 
 sleep 3
 
-curl -fL http://app:8080/
+set -o pipefail
+
+curl -fL http://app:8080/ | grep "background-color: ${COLOR}"
