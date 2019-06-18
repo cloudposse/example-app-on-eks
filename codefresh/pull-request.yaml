@@ -67,7 +67,7 @@ steps:
     composition: codefresh/test/docker-compose.yml
     # Pass in docker-compose variables (not environment variables)
     composition_variables:
-      - "TEST_IMAGE=${{build_test}}"
+      - "TEST_IMAGE=${{CF_REPO_NAME}}:${{CF_SHORT_REVISION}}-test"
     # Run tests against the composition
     composition_candidates:
       integration_tests:
