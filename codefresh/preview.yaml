@@ -195,7 +195,7 @@ steps:
       - GITHUB_REPO=${{CF_REPO_NAME}}
       - GITHUB_COMMENT_TYPE=commit
       - GITHUB_COMMIT_SHA=${{CF_SHORT_REVISION}}
-      - 'GITHUB_COMMENT=Version ${{CF_SHORT_REVISION}} deployed by @${{CF_BUILD_INITIATOR}} to `${{STAGE}}` at ${{APP_SCHEME}}://${{APP_HOST}}/dashboard on $${{CF_BUILD_DATE_TIME}}'
+      - 'GITHUB_COMMENT=Version ${{CF_SHORT_REVISION}} deployed by @${{CF_BUILD_INITIATOR}} in the `${{NAMESPACE}}` namespace on `${{STAGE}}` to ${{APP_SCHEME}}://${{APP_HOST}}/dashboard at $${{CF_BUILD_DATE_TIME}}'
     when:
       condition:
         all:
