@@ -38,13 +38,13 @@ steps:
     type: pending-approval
     title: Deploy Release to Staging?
     stage: Staging
-
+  
   deploy_staging:
     title: Releasing to Staging
     stage: "Staging"
     image: 'codefresh/cli:latest'
     environment:
-      - STAGE: staging
+      - STAGE=staging
     commands:
       - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${{STAGE}} -d -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v STAGE=${{STAGE}}
 
@@ -58,6 +58,6 @@ steps:
     stage: "Production"
     image: 'codefresh/cli:latest'
     environment:
-      - STAGE: prod
+      - STAGE=prod
     commands:
       - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${{STAGE}} -d -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v STAGE=${{STAGE}}
