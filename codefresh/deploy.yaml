@@ -75,7 +75,7 @@ steps:
     - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} by @${{CF_BUILD_INITIATOR}}
     - GITHUB_TARGET_URL=${{APP_SCHEME}}://${{APP_HOST}}/dashboard
 
-add_url_to_comment_on_commit:
+  add_url_to_comment_on_commit:
     title: Comment on commit with the deployed URL
     stage: Deploy
     image: cloudposse/github-commenter
