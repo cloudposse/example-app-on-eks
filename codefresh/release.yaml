@@ -47,6 +47,11 @@ steps:
       - STAGE=staging
     commands:
       - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${STAGE} -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v STAGE=${STAGE}
+    when:
+      steps:
+      - name: deploy_staging_confirmation
+        on:
+        - approved
 
   deploy_production_confirmation:
     type: pending-approval
@@ -61,3 +66,8 @@ steps:
       - STAGE=prod
     commands:
       - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${STAGE} -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v STAGE=${STAGE}
+    when:
+      steps:
+      - name: deploy_production_confirmation
+        on:
+        - approved
