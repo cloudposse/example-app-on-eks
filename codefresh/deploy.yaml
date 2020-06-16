@@ -42,7 +42,7 @@ steps:
     commands:
     # Announce the release version
     - "echo 'Preparing to deploy ${{CF_REPO_NAME}}:${{CF_RELEASE_TAG}}'"
-    - "apk add --update curl make bash git kubectl@cloudposse helm@cloudposse helmfile@cloudposse
+    - "apk add --update curl make bash git kubectl@cloudposse helm@cloudposse=3.1.3-r0 helmfile@cloudposse
     - "kubectl config use-context ${{KUBE_CONTEXT}}"
     # Deploy chart to cluster in a dedicated namespace
     - "helmfile --namespace ${{NAMESPACE}} --selector preview=true sync"
