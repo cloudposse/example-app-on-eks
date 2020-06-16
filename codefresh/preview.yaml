@@ -30,6 +30,7 @@ steps:
     - cf_export PIPELINE_ENV=integration
     - cf_export NAMESPACE=pr-${{CF_PULL_REQUEST_NUMBER}}-${{CF_REPO_NAME}}
     - cf_export RELEASE_NAME=pr-${{CF_PULL_REQUEST_NUMBER}}-${{CF_REPO_NAME}}
+    - cf_export APP_SCHEME=http
     - cf_export APP_HOST=pr-${{CF_PULL_REQUEST_NUMBER}}.${{CF_REPO_NAME}}.${{BASE_HOST}}
     - cf_export IMAGE_NAME=${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     - cf_export IMAGE_TAG=${{CF_REVISION}}
@@ -97,7 +98,7 @@ steps:
     - GITHUB_CONTEXT=Staging Environment
     - GITHUB_STATE=pending
     - GITHUB_DESCRIPTION=Deploying changes to ${{NAMESPACE}} namespace
-    - GITHUB_TARGET_URL=http://${{APP_HOST}}
+    - GITHUB_TARGET_URL=${{APP_SCHEME}}://${{APP_HOST}}
     when:
       condition:
         all:
@@ -159,7 +160,7 @@ steps:
     - GITHUB_CONTEXT=${{STAGE}}
     - GITHUB_STATE=success
     - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} namespace by @${{CF_BUILD_INITIATOR}} at ${{CF_BUILD_DATE_TIME}}
-    - GITHUB_TARGET_URL=http://${{APP_HOST}}/dashboard
+    - GITHUB_TARGET_URL=${{APP_SCHEME}}://${{APP_HOST}}/dashboard
     when:
       condition:
         all:
@@ -194,7 +195,7 @@ steps:
       - GITHUB_REPO=${{CF_REPO_NAME}}
       - GITHUB_COMMENT_TYPE=commit
       - GITHUB_COMMIT_SHA=${{CF_SHORT_REVISION}}
-      - 'GITHUB_COMMENT=Version ${{CF_SHORT_REVISION}} deployed to ${{APP_SCHEME}}://${{APP_HOST}}'
+      - 'GITHUB_COMMENT=Version ${{CF_SHORT_REVISION}} deployed by @${{CF_BUILD_INITIATOR}} to ${{APP_SCHEME}}://${{APP_HOST}}/dashboard'
     when:
       condition:
         all:
