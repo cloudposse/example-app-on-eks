@@ -49,7 +49,7 @@ steps:
     - GITHUB_OWNER=${{CF_REPO_OWNER}}
     - GITHUB_REPO=${{CF_REPO_NAME}}
     - GITHUB_REF=${{CF_REVISION}}
-    - GITHUB_CONTEXT=${{STAGE}}/env
+    - GITHUB_CONTEXT=preview/env
     - GITHUB_STATE=success
     - GITHUB_DESCRIPTION=Destroyed by @${{CF_BUILD_INITIATOR}}
     - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
