@@ -22,6 +22,7 @@ steps:
     image: alpine
     commands:
     - cf_export COLOR=blue
+    - cf_export STAGE=preview
     - cf_export GIT_BRANCH=${{CF_BRANCH}}
     - cf_export PROJECT=${{CF_REPO_NAME}}
     - cf_export APP_NAME=${{CF_REPO_NAME}}
@@ -32,6 +33,7 @@ steps:
     - cf_export APP_HOST=pr-${{CF_PULL_REQUEST_NUMBER}}.${{CF_REPO_NAME}}.${{BASE_HOST}}
     - cf_export IMAGE_NAME=${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     - cf_export IMAGE_TAG=${{CF_REVISION}}
+    - cf_export CF_BUILD_DATE_TIME=$(date +"%Y-%m-%d %H:%M:%S" -d @${{CF_BUILD_TIMESTAMP}})
 
   build:
     type: parallel
@@ -154,9 +156,9 @@ steps:
     - GITHUB_OWNER=${{CF_REPO_OWNER}}
     - GITHUB_REPO=${{CF_REPO_NAME}}
     - GITHUB_REF=${{CF_REVISION}}
-    - GITHUB_CONTEXT=Staging Environment
+    - GITHUB_CONTEXT=${{STAGE}}
     - GITHUB_STATE=success
-    - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} namespace
+    - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} namespace by @${{CF_BUILD_INITIATOR}} at ${{CF_BUILD_DATE_TIME}}
     - GITHUB_TARGET_URL=http://${{APP_HOST}}/dashboard
     when:
       condition:

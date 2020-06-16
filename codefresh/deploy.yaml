@@ -15,6 +15,7 @@ steps:
     - cf_export IMAGE_TAG=${{CF_RELEASE_TAG}}
     - cf_export APP_HOST=${{STAGE}}.${{CF_REPO_NAME}}.${{BASE_HOST}}
     - cf_export COLOR=blue
+    - cf_export CF_BUILD_DATE_TIME=$(date +"%Y-%m-%d %H:%M:%S" -d @${{CF_BUILD_TIMESTAMP}})
 
   ask_for_permission:
     type: pending-approval
@@ -60,3 +61,23 @@ steps:
     commands:
     - make codefresh/notify/slack/deploy/webapp
 
+  set_github_deployment_status_to_success:
+    title: Set GitHub deployment status to "success"
+    stage: Deploy
+    image: cloudposse/github-status-updater
+    environment:
+    - GITHUB_ACTION=update_state
+    - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+    - GITHUB_OWNER=${{CF_REPO_OWNER}}
+    - GITHUB_REPO=${{CF_REPO_NAME}}
+    - GITHUB_REF=${{CF_REVISION}}
+    - GITHUB_CONTEXT=${{STAGE}}
+    - GITHUB_STATE=success
+    - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} namespace by @${{CF_BUILD_INITIATOR}} at ${{CF_BUILD_DATE_TIME}}
+    - GITHUB_TARGET_URL=http://${{APP_HOST}}/dashboard
+
+    when:
+      condition:
+        all:
+          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"
+          githubNotificationsEnabled: "'${{GITHUB_NOTIFICATIONS_ENABLED}}' == 'true'"
