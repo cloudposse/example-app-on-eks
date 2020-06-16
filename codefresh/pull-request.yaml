@@ -40,9 +40,8 @@ steps:
         title: Build image
         type: build
         description: Build app
-        image_name: ${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
+        image_name: $${{CF_DOCKER_REPO_URL}}/{{CF_REPO_NAME}}
         tag: ${{CF_SHORT_REVISION}}
-        registry: dockerhub
         dockerfile: Dockerfile
         no_cache: false
         no_cf_cache: false
@@ -106,6 +105,7 @@ steps:
     title: Push image with commit tag
     stage: Deploy
     type: push
+    registry: dockerhub
     candidate: ${{build_image}}
     tags:
     - "${{CF_REVISION}}"
