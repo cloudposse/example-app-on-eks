@@ -180,3 +180,19 @@ steps:
       condition:
         any:
           deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"
+
+  add_url_to_comment_on_commit:
+    title: Comment on commit with the deployed URL
+    stage: Deploy
+    image: cloudposse/github-commenter
+    environment:
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_COMMENT_TYPE=commit
+      - GITHUB_COMMIT_SHA=${{CF_SHORT_REVISION}}
+      - 'GITHUB_COMMENT=Version ${{CF_SHORT_REVISION}} deployed to ${{APP_SCHEME}}://${{APP_HOST}}'
+    when:
+      condition:
+        all:
+          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"

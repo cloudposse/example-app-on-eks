@@ -1,21 +1,20 @@
 version: '1.0'
 
 stages:
-  - Prepare
   - Promote
-  - Deploy
+  - Deploy Staging
+  - Deploy Production
 
 steps:
   main_clone:
-    title: "Create Context"
-    stage: "Prepare"
+    title: "Prepare Release"
+    stage: "Promote"
     image: alpine
     commands:
-      # Extract the postfix of a semver (e.g. 0.0.0-stage => stage)
-      - cf_export STAGE=$(echo ${{CF_RELEASE_TAG}} | sed -E 's/^[^-]+-?//')
+      - echo "Preparing Deployment of ${{CF_REVISION}} (${{CF_REVISION}})"
 
   pull_image_sha:
-    title: Pull image with commit sha
+    title: Pull image with commit SHA
     stage: "Promote"
     image: "${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}:${{CF_REVISION}}"
     retry:
@@ -39,9 +38,16 @@ steps:
     title: Deploy Release
     stage: "Deploy"
     image: 'codefresh/cli:latest'
+    environment:
+      STAGE: staging
     commands:
       - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${{STAGE}} -d -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v STAGE=${{STAGE}}
-    when:
-      condition:
-        all:
-          stageDefined: "'${{STAGE}}' != ''"
+
+  deploy:
+    title: Deploy Release to Production
+    stage: "Deploy Production"
+    image: 'codefresh/cli:latest'
+    environment:
+      STAGE: prod
+    commands:
+      - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${{STAGE}} -d -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v STAGE=${{STAGE}}
