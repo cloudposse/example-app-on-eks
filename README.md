@@ -6,7 +6,7 @@ Example application for Codefresh CI/CD demonstrations.
 
 ### Codefresh Pipelines 
 
-1. Unlimited Staging Pipelines (pull-request, destroy)
+1. Unlimited Staging Pipelines (preview, destroy)
 2. Release Pipeline
 3. Deploy Pipeline
 

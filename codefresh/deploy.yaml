@@ -43,7 +43,7 @@ steps:
     - "apk add --update curl make bash git kubectl@cloudposse helm@cloudposse helmfile@cloudposse
     - "kubectl config use-context ${{KUBE_CONTEXT}}"
     # Deploy chart to cluster in a dedicated namespace
-    - "helmfile --namespace ${{NAMESPACE}} --selector pull-request=true sync"
+    - "helmfile --namespace ${{NAMESPACE}} --selector preview=true sync"
     when:
       steps:
       - name: ask_for_permission

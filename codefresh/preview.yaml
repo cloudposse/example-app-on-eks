@@ -156,7 +156,7 @@ steps:
     - GITHUB_CONTEXT=Staging Environment
     - GITHUB_STATE=success
     - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} namespace
-    - GITHUB_TARGET_URL=http://${{APP_HOST}}
+    - GITHUB_TARGET_URL=http://${{APP_HOST}}/dashboard
     when:
       condition:
         all:

@@ -11,7 +11,7 @@ releases:
 - name: '{{ requiredEnv "RELEASE_NAME" }}'
   labels:
     color: "{{ requiredEnv "COLOR" }}"
-    pull-request: "true"
+    preview: "true"
   chart: "cloudposse-incubator/monochart"
   version: "0.22.0"
   wait: true
