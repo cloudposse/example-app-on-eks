@@ -21,6 +21,7 @@ steps:
     stage: Prepare
     image: alpine
     commands:
+    - cf_export COLOR=default
     - cf_export GIT_BRANCH=${{CF_BRANCH}}
     - cf_export PROJECT=${{CF_REPO_NAME}}
     - cf_export APP_NAME=${{CF_REPO_NAME}}
