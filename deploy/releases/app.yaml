@@ -17,7 +17,6 @@ releases:
   wait: true
   force: true
   recreatePods: false
-  createNamespace: true
   values:
     - fullnameOverride: "example-{{ requiredEnv "COLOR" }}"
       image:
