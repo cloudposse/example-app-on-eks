@@ -1,5 +1,5 @@
 # Ordered list of releases. 
 helmfiles:
-  - "releases/pull-secret.yaml"
+#  - "releases/pull-secret.yaml"
   - "releases/app.yaml"
   - "releases/istio.yaml"
