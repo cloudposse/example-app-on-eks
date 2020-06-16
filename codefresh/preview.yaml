@@ -95,7 +95,7 @@ steps:
     - GITHUB_OWNER=${{CF_REPO_OWNER}}
     - GITHUB_REPO=${{CF_REPO_NAME}}
     - GITHUB_REF=${{CF_REVISION}}
-    - GITHUB_CONTEXT=Staging Environment
+    - GITHUB_CONTEXT=${{STAGE}}/env
     - GITHUB_STATE=pending
     - GITHUB_DESCRIPTION=Deploying changes to ${{NAMESPACE}} namespace
     - GITHUB_TARGET_URL=${{APP_SCHEME}}://${{APP_HOST}}
@@ -157,7 +157,7 @@ steps:
     - GITHUB_OWNER=${{CF_REPO_OWNER}}
     - GITHUB_REPO=${{CF_REPO_NAME}}
     - GITHUB_REF=${{CF_REVISION}}
-    - GITHUB_CONTEXT=${{STAGE}}
+    - GITHUB_CONTEXT=${{STAGE}}/env
     - GITHUB_STATE=success
     - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} namespace by @${{CF_BUILD_INITIATOR}} at ${{CF_BUILD_DATE_TIME}}
     - GITHUB_TARGET_URL=${{APP_SCHEME}}://${{APP_HOST}}/dashboard
