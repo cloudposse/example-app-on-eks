@@ -14,6 +14,7 @@ steps:
     - cf_export IMAGE_NAME=${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     - cf_export IMAGE_TAG=${{CF_RELEASE_TAG}}
     - cf_export GATEWAY_HOST=example.${{BASE_HOST}}
+    - cf_export COLOR=blue
 
   ask_for_permission:
     type: pending-approval
