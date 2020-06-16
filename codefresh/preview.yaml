@@ -159,7 +159,7 @@ steps:
     - GITHUB_REF=${{CF_REVISION}}
     - GITHUB_CONTEXT=${{STAGE}}/env
     - GITHUB_STATE=success
-    - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} namespace by @${{CF_BUILD_INITIATOR}} at ${{CF_BUILD_DATE_TIME}}
+    - GITHUB_DESCRIPTION=Deployed `${{NAMESPACE}}` (@${{CF_BUILD_INITIATOR}})
     - GITHUB_TARGET_URL=${{APP_SCHEME}}://${{APP_HOST}}/dashboard
     when:
       condition:
@@ -195,7 +195,7 @@ steps:
       - GITHUB_REPO=${{CF_REPO_NAME}}
       - GITHUB_COMMENT_TYPE=commit
       - GITHUB_COMMIT_SHA=${{CF_SHORT_REVISION}}
-      - 'GITHUB_COMMENT=Version ${{CF_SHORT_REVISION}} deployed by @${{CF_BUILD_INITIATOR}} to ${{APP_SCHEME}}://${{APP_HOST}}/dashboard'
+      - 'GITHUB_COMMENT=Version ${{CF_SHORT_REVISION}} deployed by @${{CF_BUILD_INITIATOR}} to `${{STAGE}}` at ${{APP_SCHEME}}://${{APP_HOST}}/dashboard on $${{CF_BUILD_DATE_TIME}}'
     when:
       condition:
         all:
