@@ -32,9 +32,7 @@ tasks:
   deps:
     description: "Install alpine dependencies"
     script: |
-      ! which apk >/dev/null || apk add --update curl make bash git kubectl@cloudposse helm2@cloudposse helmfile@cloudposse
-      update-alternatives --set helm  /usr/share/helm/2/bin/helm2
-      helm init --client-only
+      ! which apk >/dev/null || apk add --update curl make bash git kubectl@cloudposse helm@cloudposse helmfile@cloudposse
 
   color:
     description: "Lookup the current color"
