@@ -52,8 +52,13 @@ steps:
     environment:
       - PIPELINE_ENV=${{STAGE}}
       - CHART_NAME=monochart
+      - GIT_COMMIT_SHORT=${{CF_SHORT_REVISION}}
+      - GIT_COMMIT_URL=${{CF_COMMIT_URL}}
+      - GIT_COMMIT_MESSAGE=${{CF_COMMIT_MESSAGE}}
+      - GIT_COMMIT_AUTHOR=${{CF_COMMIT_AUTHOR}}
+      - GIT_BRANCH_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
     commands:
-    - make codefresh/notify/slack/deploy/webapp
+    - make codefresh/notify/slack/deploy/webapp GIT_COMMIT_TIMESTAMP=$((${{CF_BUILD_TIMESTAMP}}/1000))
 
   set_github_deployment_status_to_success:
     title: Set GitHub deployment status to "success"
