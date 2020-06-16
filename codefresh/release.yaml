@@ -40,7 +40,7 @@ steps:
     stage: Staging
 
   deploy_staging:
-    title: Deploy to Staging
+    title: Releasing to Staging
     stage: "Staging"
     image: 'codefresh/cli:latest'
     environment:
@@ -54,7 +54,7 @@ steps:
     stage: Production
   
   deploy_production:
-    title: Deploy Release to Production
+    title: Releasing to Production
     stage: "Production"
     image: 'codefresh/cli:latest'
     environment:

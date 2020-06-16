@@ -18,11 +18,6 @@ steps:
     - cf_export COLOR=blue
     - cf_export CF_BUILD_DATE_TIME=$(date +"%Y-%m-%d/%H:%M:%S" -d @$((${{CF_BUILD_TIMESTAMP}}/1000)))
 
-  ask_for_permission:
-    type: pending-approval
-    title: Deploy release?
-    stage: Prepare
-
   wait:
     title: Wait
     stage: Prepare
@@ -77,12 +72,6 @@ steps:
     - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} by @${{CF_BUILD_INITIATOR}}
     - GITHUB_TARGET_URL=${{APP_SCHEME}}://${{APP_HOST}}/dashboard
 
-    when:
-      condition:
-        all:
-          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"
-          githubNotificationsEnabled: "'${{GITHUB_NOTIFICATIONS_ENABLED}}' == 'true'"
-
 add_url_to_comment_on_commit:
     title: Comment on commit with the deployed URL
     stage: Deploy
@@ -94,7 +83,3 @@ add_url_to_comment_on_commit:
       - GITHUB_COMMENT_TYPE=commit
       - GITHUB_COMMIT_SHA=${{CF_SHORT_REVISION}}
       - 'GITHUB_COMMENT=Version ${{CF_SHORT_REVISION}} deployed by @${{CF_BUILD_INITIATOR}} to the [`${{NAMESPACE}}`](${{APP_SCHEME}}://${{APP_HOST}}/dashboard) namespace on `${{STAGE}}` at ${{CF_BUILD_DATE_TIME}}'
-    when:
-      condition:
-        all:
-          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"
