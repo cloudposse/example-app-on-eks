@@ -34,7 +34,7 @@ steps:
     - cf_export APP_HOST=pr-${{CF_PULL_REQUEST_NUMBER}}.${{CF_REPO_NAME}}.${{BASE_HOST}}
     - cf_export IMAGE_NAME=${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     - cf_export IMAGE_TAG=${{CF_REVISION}}
-    - cf_export CF_BUILD_DATE_TIME=$(date "%Y-%m-%d/%H:%M:%S" -d @$((CF_BUILD_TIMESTAMP/1000)))
+    - cf_export CF_BUILD_DATE_TIME=$(date "%Y-%m-%d/%H:%M:%S" -d @$((${{CF_BUILD_TIMESTAMP}}/1000)))
 
   build:
     type: parallel
