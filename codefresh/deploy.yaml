@@ -54,6 +54,7 @@ steps:
     working_directory: /build-harness
     environment:
       - PIPELINE_ENV=${{STAGE}}
+      - CHART_NAME=monochart
     commands:
     - make codefresh/notify/slack/deploy/webapp
 
