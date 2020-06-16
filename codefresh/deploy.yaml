@@ -34,6 +34,8 @@ steps:
     stage: "Deploy"
     image: "${{IMAGE_NAME}}:${{IMAGE_TAG}}"
     working_directory: /deploy/
+    environment:
+      - RELEASE_NAME=${{CF_REPO_NAME}}
     commands:
     # Announce the release version
     - "echo 'Preparing to deploy ${{IMAGE_NAME}}:${{IMAGE_TAG}}'"
