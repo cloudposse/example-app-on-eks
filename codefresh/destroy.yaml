@@ -30,7 +30,7 @@ steps:
     commands:
     - "apk add kubectl@cloudposse helm@cloudposse=3.1.3-r0 helmfile@cloudposse"
     - "kubectl config use-context ${{KUBE_CONTEXT}}"
-    - "helmfile --namespace ${{NAMESPACE}} --selector preview=true destroy"
+    - "helmfile --namespace ${NAMESPACE} --selector preview=true destroy"
     when:
       condition:
         any:
@@ -49,7 +49,7 @@ steps:
     - GITHUB_REF=${{CF_REVISION}}
     - GITHUB_CONTEXT=${{STAGE}}/env
     - GITHUB_STATE=success
-    - GITHUB_DESCRIPTION=Destroyed ${{NAMESPACE}} by @${{CF_BUILD_INITIATOR}}
+    - GITHUB_DESCRIPTION=Destroyed by @${{CF_BUILD_INITIATOR}}
     - GITHUB_TARGET_URL=${{CF_BUILD_URL}}
     when:
       condition:
