@@ -16,7 +16,7 @@ steps:
     - cf_export APP_SCHEME=http
     - cf_export APP_HOST=${{STAGE}}.${{CF_REPO_NAME}}.${{BASE_HOST}}
     - cf_export COLOR=blue
-    - cf_export CF_BUILD_DATE_TIME=$(date +"%Y-%m-%d %H:%M:%S" -d "@${{CF_BUILD_TIMESTAMP}}")
+    - cf_export CF_BUILD_DATE_TIME=$(date +"%Y-%m-%d %H:%M:%S" -d "@$((CF_BUILD_TIMESTAMP/1000))")
 
   ask_for_permission:
     type: pending-approval
