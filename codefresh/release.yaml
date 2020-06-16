@@ -22,7 +22,7 @@ steps:
       delay: 20
       exponentialFactor: 1.1
     commands:
-    - "true"
+      - "true"
 
   push_image_tag:
     title: Push image with release tag
@@ -32,7 +32,7 @@ steps:
     candidate: "${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}:${{CF_REVISION}}"
     registry: dockerhub
     tags:
-    - "${{CF_RELEASE_TAG}}"
+      - "${{CF_RELEASE_TAG}}"
 
   deploy_staging_confirmation:
     type: pending-approval
@@ -44,7 +44,7 @@ steps:
     stage: "Staging"
     image: 'codefresh/cli:latest'
     environment:
-      STAGE: staging
+      - STAGE: staging
     commands:
       - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${{STAGE}} -d -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v STAGE=${{STAGE}}
 
@@ -58,6 +58,6 @@ steps:
     stage: "Production"
     image: 'codefresh/cli:latest'
     environment:
-      STAGE: prod
+      - STAGE: prod
     commands:
       - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${{STAGE}} -d -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v STAGE=${{STAGE}}
