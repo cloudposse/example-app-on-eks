@@ -28,10 +28,9 @@ steps:
     environment:
     - NAMESPACE=pr-${{CF_PULL_REQUEST_NUMBER}}-${{CF_REPO_NAME}}
     commands:
-    - "apk add kubectl@cloudposse"
+    - "apk add kubectl@cloudposse helm@cloudposse=3.1.3-r0 helmfile@cloudposse"
     - "kubectl config use-context ${{KUBE_CONTEXT}}"
-    - "make helm/delete/namespace"
-    - "make helm/delete/namespace/empty"
+    - "helmfile --namespace ${{NAMESPACE}} --selector preview=true destroy"
     when:
       condition:
         any:
