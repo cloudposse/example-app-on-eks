@@ -2,8 +2,8 @@ version: '1.0'
 
 stages:
   - Promote
-  - Deploy Staging
-  - Deploy Production
+  - Staging
+  - Production
 
 steps:
   main_clone:
@@ -34,18 +34,28 @@ steps:
     tags:
     - "${{CF_RELEASE_TAG}}"
 
-  deploy:
-    title: Deploy Release
-    stage: "Deploy"
+  deploy_staging_confirmation:
+    type: pending-approval
+    title: Deploy Release to Staging?
+    stage: Staging
+
+  deploy_staging:
+    title: Deploy to Staging
+    stage: "Staging"
     image: 'codefresh/cli:latest'
     environment:
       STAGE: staging
     commands:
       - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${{STAGE}} -d -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v STAGE=${{STAGE}}
 
-  deploy:
+  deploy_production_confirmation:
+    type: pending-approval
+    title: Deploy Release to Production?
+    stage: Production
+  
+  deploy_production:
     title: Deploy Release to Production
-    stage: "Deploy Production"
+    stage: "Production"
     image: 'codefresh/cli:latest'
     environment:
       STAGE: prod
