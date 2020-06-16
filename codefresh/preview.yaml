@@ -21,16 +21,20 @@ steps:
     stage: Prepare
     image: alpine
     commands:
+    - cf_export COLOR=blue
+    - cf_export STAGE=preview
     - cf_export GIT_BRANCH=${{CF_BRANCH}}
     - cf_export PROJECT=${{CF_REPO_NAME}}
     - cf_export APP_NAME=${{CF_REPO_NAME}}
     - cf_export CHART_NAME=monochart
     - cf_export PIPELINE_ENV=integration
     - cf_export NAMESPACE=pr-${{CF_PULL_REQUEST_NUMBER}}-${{CF_REPO_NAME}}
-    - cf_export RELEASE_NAME=pr-${{CF_PULL_REQUEST_NUMBER}}-${{CF_REPO_NAME}}
+    - cf_export RELEASE_NAME=${{CF_REPO_NAME}}
+    - cf_export APP_SCHEME=http
     - cf_export APP_HOST=pr-${{CF_PULL_REQUEST_NUMBER}}.${{CF_REPO_NAME}}.${{BASE_HOST}}
     - cf_export IMAGE_NAME=${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     - cf_export IMAGE_TAG=${{CF_REVISION}}
+    - cf_export CF_BUILD_DATE_TIME=$(date +"%Y-%m-%d/%H:%M:%S" -d @$((${{CF_BUILD_TIMESTAMP}}/1000)))
 
   build:
     type: parallel
@@ -40,7 +44,7 @@ steps:
         title: Build image
         type: build
         description: Build app
-        image_name: ${{CF_REPO_NAME}}
+        image_name: ${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
         tag: ${{CF_SHORT_REVISION}}
         dockerfile: Dockerfile
         no_cache: false
@@ -91,10 +95,10 @@ steps:
     - GITHUB_OWNER=${{CF_REPO_OWNER}}
     - GITHUB_REPO=${{CF_REPO_NAME}}
     - GITHUB_REF=${{CF_REVISION}}
-    - GITHUB_CONTEXT=Staging Environment
+    - GITHUB_CONTEXT=${{STAGE}}/env
     - GITHUB_STATE=pending
     - GITHUB_DESCRIPTION=Deploying changes to ${{NAMESPACE}} namespace
-    - GITHUB_TARGET_URL=http://${{APP_HOST}}
+    - GITHUB_TARGET_URL=${{APP_SCHEME}}://${{APP_HOST}}
     when:
       condition:
         all:
@@ -105,6 +109,7 @@ steps:
     title: Push image with commit tag
     stage: Deploy
     type: push
+    registry: dockerhub
     candidate: ${{build_image}}
     tags:
     - "${{CF_REVISION}}"
@@ -114,7 +119,7 @@ steps:
     stage: Deploy
     image: codefresh/cli:latest
     commands:
-      - codefresh get builds --pipeline=destroy --pipeline=pull-request --branch=${{CF_BRANCH}} --status running --limit 1000 -o json | jq --arg id ${{CF_BUILD_ID}} -ser 'flatten|.[-1].id==$id'
+      - codefresh get builds --pipeline=destroy --pipeline=preview --branch=${{CF_BRANCH}} --status running --limit 1000 -o json | jq --arg id ${{CF_BUILD_ID}} -ser 'flatten|.[-1].id==$id'
     retry:
       maxAttempts: 10
       delay: 20
@@ -132,8 +137,11 @@ steps:
     commands:
     # Announce the release version
     - "echo 'Preparing to deploy ${{CF_REPO_NAME}}:${{CF_RELEASE_TAG}}'"
+    # Downgrade to helm 3.1.3: https://github.com/helm/helm/issues/7956
+    - "apk add --update curl make bash git kubectl@cloudposse helm@cloudposse=3.1.3-r0 helmfile@cloudposse"
+    - "kubectl config use-context ${{KUBE_CONTEXT}}"
     # Deploy chart to cluster in a dedicated namespace
-    - "/deploy/ctl --namespace=${{NAMESPACE}} rolling"
+    - "helmfile --namespace ${{NAMESPACE}} --selector preview=true sync"
     when:
       condition:
         any:
@@ -149,10 +157,10 @@ steps:
     - GITHUB_OWNER=${{CF_REPO_OWNER}}
     - GITHUB_REPO=${{CF_REPO_NAME}}
     - GITHUB_REF=${{CF_REVISION}}
-    - GITHUB_CONTEXT=Staging Environment
+    - GITHUB_CONTEXT=${{STAGE}}/env
     - GITHUB_STATE=success
-    - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} namespace
-    - GITHUB_TARGET_URL=http://${{APP_HOST}}
+    - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} by @${{CF_BUILD_INITIATOR}}
+    - GITHUB_TARGET_URL=${{APP_SCHEME}}://${{APP_HOST}}/dashboard
     when:
       condition:
         all:
@@ -177,3 +185,18 @@ steps:
         any:
           deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"
 
+  add_url_to_comment_on_commit:
+    title: Comment on commit with the deployed URL
+    stage: Deploy
+    image: cloudposse/github-commenter
+    environment:
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_COMMENT_TYPE=commit
+      - GITHUB_COMMIT_SHA=${{CF_SHORT_REVISION}}
+      - 'GITHUB_COMMENT=Version ${{CF_SHORT_REVISION}} deployed by @${{CF_BUILD_INITIATOR}} to the [`${{NAMESPACE}}`](${{APP_SCHEME}}://${{APP_HOST}}/dashboard) namespace on `${{STAGE}}` at ${{CF_BUILD_DATE_TIME}}<details>![:thumbsup:](https://cloudposse.com/urand/familyguy.gif)</details>'
+    when:
+      condition:
+        all:
+          deployLabel: "match('${{CF_PULL_REQUEST_LABELS}}', 'deploy', false) == true"

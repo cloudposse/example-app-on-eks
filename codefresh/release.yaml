@@ -1,21 +1,20 @@
 version: '1.0'
 
 stages:
-  - Prepare
   - Promote
-  - Deploy
+  - Staging
+  - Production
 
 steps:
   main_clone:
-    title: "Create Context"
-    stage: "Prepare"
+    title: "Prepare Release"
+    stage: "Promote"
     image: alpine
     commands:
-      # Extract the postfix of a semver (e.g. 0.0.0-stage => stage)
-      - cf_export STAGE=$(echo ${{CF_RELEASE_TAG}} | sed -E 's/^[^-]+-?//')
+      - echo "Preparing Deployment of ${{CF_RELEASE_TAG}} (${{CF_REVISION}})"
 
   pull_image_sha:
-    title: Pull image with commit sha
+    title: Pull image with commit SHA
     stage: "Promote"
     image: "${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}:${{CF_REVISION}}"
     retry:
@@ -23,24 +22,52 @@ steps:
       delay: 20
       exponentialFactor: 1.1
     commands:
-    - "true"
+      - "true"
 
   push_image_tag:
     title: Push image with release tag
     stage: "Promote"
     type: push
-    image_name: ${{CF_REPO_NAME}}
+    image_name: ${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     candidate: "${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}:${{CF_REVISION}}"
+    registry: dockerhub
     tags:
-    - "${{CF_RELEASE_TAG}}"
+      - "${{CF_RELEASE_TAG}}"
 
-  deploy:
-    title: Deploy Release
-    stage: "Deploy"
+  deploy_staging_confirmation:
+    type: pending-approval
+    title: Deploy Release to Staging?
+    stage: Staging
+  
+  deploy_staging:
+    title: Releasing to Staging
+    stage: "Staging"
     image: 'codefresh/cli:latest'
+    environment:
+      - STAGE=staging
     commands:
-      - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${{STAGE}} -d -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v STAGE=${{STAGE}}
+      - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${STAGE} -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v CF_SHORT_REVISION="Release ${{CF_RELEASE_TAG}}" -v CF_COMMIT_AUTHOR=${{CF_COMMIT_AUTHOR}} -v CF_BRANCH_TAG_NORMALIZED=${{CF_BRANCH_TAG_NORMALIZED}} -v STAGE=${STAGE}
     when:
-      condition:
-        all:
-          stageDefined: "'${{STAGE}}' != ''"
+      steps:
+      - name: deploy_staging_confirmation
+        on:
+        - approved
+
+  deploy_production_confirmation:
+    type: pending-approval
+    title: Deploy Release to Production?
+    stage: Production
+  
+  deploy_production:
+    title: Releasing to Production
+    stage: "Production"
+    image: 'codefresh/cli:latest'
+    environment:
+      - STAGE=prod
+    commands:
+      - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${STAGE} -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_RELEASE_TAG}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v CF_SHORT_REVISION=${{CF_SHORT_REVISION}} -v CF_COMMIT_URL=${{CF_COMMIT_URL}} -v CF_COMMIT_MESSAGE="Release ${{CF_RELEASE_TAG}}" -v CF_COMMIT_AUTHOR=${{CF_COMMIT_AUTHOR}} -v CF_BRANCH_TAG_NORMALIZED=${{CF_BRANCH_TAG_NORMALIZED}} -v STAGE=${STAGE}
+    when:
+      steps:
+      - name: deploy_production_confirmation
+        on:
+        - approved

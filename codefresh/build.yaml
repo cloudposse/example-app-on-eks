@@ -4,6 +4,7 @@ stages:
   - Prepare
   - Build
   - Push
+  - Deploy
 
 steps:
   main_clone:
@@ -20,7 +21,7 @@ steps:
     stage: Build
     type: build
     description: Build image
-    image_name: ${{CF_REPO_NAME}}
+    image_name: ${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     dockerfile: Dockerfile
 
   push_image_commit:
@@ -28,5 +29,19 @@ steps:
     stage: Push
     type: push
     candidate: ${{build_image}}
+    registry: dockerhub
     tags:
     - "${{CF_REVISION}}"
+
+  deploy_master:
+    title: Deploying to Master
+    stage: "Deploy"
+    image: 'codefresh/cli:latest'
+    environment:
+      STAGE: master
+    commands:
+      - codefresh run ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${{STAGE}} -d -b=${{CF_BRANCH}} -v CF_RELEASE_TAG=${{CF_REVISION}} -v CF_PRERELEASE_FLAG=${{CF_PRERELEASE_FLAG}} -v STAGE=${{STAGE}}
+    when:
+      branch:
+        only:
+          - master

@@ -13,12 +13,10 @@ steps:
     - cf_export NAMESPACE=${{STAGE}}
     - cf_export IMAGE_NAME=${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
     - cf_export IMAGE_TAG=${{CF_RELEASE_TAG}}
-    - cf_export GATEWAY_HOST=example.${{BASE_HOST}}
-
-  ask_for_permission:
-    type: pending-approval
-    title: Deploy release?
-    stage: Prepare
+    - cf_export APP_SCHEME=http
+    - cf_export APP_HOST=${{STAGE}}.${{CF_REPO_NAME}}.${{BASE_HOST}}
+    - cf_export COLOR=blue
+    - cf_export CF_BUILD_DATE_TIME=$(date +"%Y-%m-%d/%H:%M:%S" -d @$((${{CF_BUILD_TIMESTAMP}}/1000)))
 
   wait:
     title: Wait
@@ -34,18 +32,17 @@ steps:
   deploy_helmfile:
     title: "Deploy with helmfile"
     stage: "Deploy"
-    image: "${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}:${{CF_REVISION}}"
+    image: "${{IMAGE_NAME}}:${{IMAGE_TAG}}"
     working_directory: /deploy/
+    environment:
+      - RELEASE_NAME=${{CF_REPO_NAME}}
     commands:
     # Announce the release version
-    - "echo 'Preparing to deploy ${{CF_REPO_NAME}}:${{CF_RELEASE_TAG}}'"
-    # Deploy chart to cluster
-    - "/deploy/ctl --namespace=${{NAMESPACE}} blue-green"
-    when:
-      steps:
-      - name: ask_for_permission
-        on:
-        - approved
+    - "echo 'Preparing to deploy ${{IMAGE_NAME}}:${{IMAGE_TAG}}'"
+    - "apk add --update curl make bash git kubectl@cloudposse helm@cloudposse=3.1.3-r0 helmfile@cloudposse"
+    - "kubectl config use-context ${{KUBE_CONTEXT}}"
+    # Deploy chart to cluster in a dedicated namespace
+    - "helmfile --namespace ${{NAMESPACE}} --selector preview=true sync"
 
   send_slack_notification:
     title: Send notification to Slack channel
@@ -54,6 +51,38 @@ steps:
     working_directory: /build-harness
     environment:
       - PIPELINE_ENV=${{STAGE}}
+      - CHART_NAME=monochart
+      - GIT_COMMIT_SHORT=${{CF_SHORT_REVISION}}
+      - GIT_COMMIT_URL=${{CF_COMMIT_URL}}
+      - GIT_COMMIT_MESSAGE=${{CF_COMMIT_MESSAGE}}
+      - GIT_COMMIT_AUTHOR=${{CF_COMMIT_AUTHOR}}
+      - GIT_BRANCH_TAG=${{CF_BRANCH_TAG_NORMALIZED}}
     commands:
-    - make codefresh/notify/slack/deploy/webapp
+    - make codefresh/notify/slack/deploy/webapp GIT_COMMIT_TIMESTAMP=$((${{CF_BUILD_TIMESTAMP}}/1000))
 
+  set_github_deployment_status_to_success:
+    title: Set GitHub deployment status to "success"
+    stage: Deploy
+    image: cloudposse/github-status-updater
+    environment:
+    - GITHUB_ACTION=update_state
+    - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+    - GITHUB_OWNER=${{CF_REPO_OWNER}}
+    - GITHUB_REPO=${{CF_REPO_NAME}}
+    - GITHUB_REF=${{CF_REVISION}}
+    - GITHUB_CONTEXT=${{STAGE}}/env
+    - GITHUB_STATE=success
+    - GITHUB_DESCRIPTION=Deployed to ${{NAMESPACE}} by @${{CF_BUILD_INITIATOR}}
+    - GITHUB_TARGET_URL=${{APP_SCHEME}}://${{APP_HOST}}/dashboard
+
+add_url_to_comment_on_commit:
+    title: Comment on commit with the deployed URL
+    stage: Deploy
+    image: cloudposse/github-commenter
+    environment:
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+      - GITHUB_OWNER=${{CF_REPO_OWNER}}
+      - GITHUB_REPO=${{CF_REPO_NAME}}
+      - GITHUB_COMMENT_TYPE=commit
+      - GITHUB_COMMIT_SHA=${{CF_SHORT_REVISION}}
+      - 'GITHUB_COMMENT=Version ${{CF_SHORT_REVISION}} deployed by @${{CF_BUILD_INITIATOR}} to the [`${{NAMESPACE}}`](${{APP_SCHEME}}://${{APP_HOST}}/dashboard) namespace on `${{STAGE}}` at ${{CF_BUILD_DATE_TIME}}'
