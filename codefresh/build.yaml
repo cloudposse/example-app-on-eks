@@ -40,7 +40,7 @@ steps:
     environment:
       - STAGE=master
     commands:
-      - set -x; codefresh run "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${STAGE}" -b="${{CF_BRANCH}}" -v "CF_RELEASE_TAG=${{CF_REVISION}}" -v "CF_SHORT_REVISION=${{CF_SHORT_REVISION}}" -v "CF_COMMIT_URL=${{CF_COMMIT_URL}}" -v "CF_COMMIT_MESSAGE=${{CF_COMMIT_MESSAGE}}" -v "CF_COMMIT_AUTHOR=${{CF_COMMIT_AUTHOR}}" -v "CF_BRANCH_TAG_NORMALIZED=${{CF_BRANCH_TAG_NORMALIZED}}" -v "STAGE=${STAGE}"
+      - set -x; codefresh run "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}/deploy-${STAGE}" -b="${{CF_BRANCH}}" -v "CF_RELEASE_TAG=${{CF_REVISION}}" -v "CF_SHORT_REVISION=${{CF_SHORT_REVISION}}" -v "CF_COMMIT_URL=${{CF_COMMIT_URL}}" -v 'CF_COMMIT_MESSAGE=${{CF_COMMIT_MESSAGE}}' -v "CF_COMMIT_AUTHOR=${{CF_COMMIT_AUTHOR}}" -v "CF_BRANCH_TAG_NORMALIZED=${{CF_BRANCH_TAG_NORMALIZED}}" -v "STAGE=${STAGE}"
 #    when:
 #      branch:
 #        only:
