@@ -6,10 +6,9 @@ Example application for Codefresh CI/CD demonstrations.
 
 ### Codefresh Pipelines 
 
-1. Unlimited Staging Pipelines (preview, destroy)
-2. Release Pipeline
+1. Preview Environments for Every Pull Request
+2. Release Pipeline for Staging and Production
 3. Deploy Pipeline
-
 
 ### Features
 
@@ -18,6 +17,7 @@ Example application for Codefresh CI/CD demonstrations.
 * GitHub Status API Updates
 * Slack Notifications
 * Approval Steps
+* Deployment audit trails using comment on every commit
 * Targeted Release Deployments using GitHub Releases
 
 
