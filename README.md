@@ -1,5 +1,6 @@
 # example-app
 
+
 Example application for Codefresh CI/CD demonstrations.
 
 ## Release Engineering
