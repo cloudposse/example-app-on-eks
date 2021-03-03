@@ -14,10 +14,16 @@ func main() {
 	if len(c) == 0 {
 		c = "cyan"
 	}
+	
+	addr := os.Getenv("LISTEN")
+	if len(addr) == 0 {
+		addr = ":8080"
+	}
+	
 	count := 0
 
 	m := http.NewServeMux()
-	s := http.Server{Addr: ":8080", Handler: m}
+	s := http.Server{Addr: addr, Handler: m}
 
 	log.Printf("Server started\n")
 
