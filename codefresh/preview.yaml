@@ -55,7 +55,7 @@ steps:
         type: build
         description: "Build test image"
         dockerfile: Dockerfile
-        image_name: ${{CF_REPO_NAME}}
+        image_name: ${{CF_DOCKER_REPO_URL}}/${{CF_REPO_NAME}}
         tag: ${{CF_SHORT_REVISION}}-test
         when:
           condition:
