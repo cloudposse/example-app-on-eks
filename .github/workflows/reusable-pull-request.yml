@@ -67,7 +67,8 @@ jobs:
       destroy_envs: ${{ steps.controller.outputs.destroy_envs }}
 
   build:
-    runs-on: ["self-hosted"]
+    #runs-on: ["self-hosted"]
+    runs-on: ubuntu-latest
     if: ${{ inputs.open }}
     steps:
       - name: Checkout
