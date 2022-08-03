@@ -1,0 +1,22 @@
+name: Pull Request
+on:
+  pull_request:
+    branches: [ 'master' ]
+    types: [opened, synchronize, reopened, closed, labeled, unlabeled]
+
+permissions:
+  pull-requests: write
+  deployments: write
+
+jobs:
+  default:
+    uses: cloudposse/example-app/.github/workflows/reusable-pull-request.yml@master
+    with:
+      organization: "${{ github.event.repository.owner.login }}"
+      repository: "${{ github.event.repository.name }}"
+      registry: 252494810635.dkr.ecr.us-east-2.amazonaws.com
+      open: ${{ github.event.pull_request.state == 'open' }}
+      labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+      ref: ${{ github.event.pull_request.head.ref  }}
+    secrets:
+      github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
