@@ -19,4 +19,6 @@ jobs:
       labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
       ref: ${{ github.event.pull_request.head.ref  }}
     secrets:
+      docker-login: "${{ secrets.DOCKERHUB_USERNAME }}"
+      docker-password: "${{ secrets.DOCKERHUB_PASSWORD }}"
       github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"

@@ -24,6 +24,10 @@ on:
         required: true
         type: string
     secrets:
+      docker-login:
+        required: true
+      docker-password:
+        required: true
       github-private-actions-pat:
         required: true
 
@@ -84,6 +88,8 @@ jobs:
           organization: ${{ inputs.organization }}
           repository: ${{ inputs.repository }}
           registry: ${{ inputs.registry }}
+          login: ${{ secrets.docker-login }}
+          password: ${{ secrets.docker-password }}
 
     outputs:
       image: ${{ steps.build.outputs.image }}
