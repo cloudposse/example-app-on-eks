@@ -14,7 +14,7 @@ jobs:
     with:
       organization: "${{ github.event.repository.owner.login }}"
       repository: "${{ github.event.repository.name }}"
-      registry: 252494810635.dkr.ecr.us-east-2.amazonaws.com
+      registry: registry.hub.docker.com
       open: ${{ github.event.pull_request.state == 'open' }}
       labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
       ref: ${{ github.event.pull_request.head.ref  }}
