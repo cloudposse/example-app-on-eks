@@ -2,4 +2,4 @@
 helmfiles:
 #  - "releases/pull-secret.yaml"
   - "releases/app.yaml"
-  - "releases/istio.yaml"
+#  - "releases/istio.yaml"
