@@ -1,4 +1,10 @@
-# Ordered list of releases. 
+# Ordered list of releases.
+environments:
+  default:
+  preview:
+  staging:
+  production:
+
 helmfiles:
 #  - "releases/pull-secret.yaml"
   - "releases/app.yaml"

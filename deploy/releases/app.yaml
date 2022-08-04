@@ -1,3 +1,15 @@
+environments:
+  default:
+    values:
+      - platform:
+          region: us-east-2
+          default_ingress_domain: example.com
+          default_alb_ingress_group: default
+  preview:
+  staging:
+  production:
+
+
 repositories:
 # Cloud Posse incubator repo of helm charts
 - name: "cloudposse-incubator"
