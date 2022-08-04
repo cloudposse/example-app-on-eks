@@ -136,6 +136,8 @@ jobs:
           image: ${{ needs.build.outputs.image }}
           image-tag: ${{ needs.build.outputs.tag }}
           operation: deploy
+        env:
+          COLOR: green
 
   destroy:
     runs-on: ["self-hosted"]
