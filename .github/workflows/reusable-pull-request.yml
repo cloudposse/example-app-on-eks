@@ -139,7 +139,7 @@ jobs:
           debug: false
         env:
           COLOR: green
-          RELEASE_NAME: example-app-green
+          RELEASE_NAME: example-app
 
   destroy:
     runs-on: ["self-hosted"]
