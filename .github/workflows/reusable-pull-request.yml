@@ -138,6 +138,7 @@ jobs:
           operation: deploy
           debug: false
         env:
+          ISTIO_INSTALLED: false
           COLOR: green
           RELEASE_NAME: example-app-green
 
@@ -196,6 +197,7 @@ jobs:
           operation: destroy
           debug: false
         env:
+          ISTIO_INSTALLED: false
           COLOR: green
           RELEASE_NAME: example-app-green
 
