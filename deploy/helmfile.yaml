@@ -10,5 +10,4 @@ helmfiles:
   - path: "releases/app.yaml"
     values:
       - test: test
-        {{ .Values | toYaml }}
 #  - "releases/istio.yaml"
