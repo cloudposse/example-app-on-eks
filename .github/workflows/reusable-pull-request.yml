@@ -194,6 +194,10 @@ jobs:
           image: "<none>"
           image-tag: "<none>"
           operation: destroy
+          debug: false
+        env:
+          COLOR: green
+          RELEASE_NAME: example-app
 
       - name: Cleanup label
         uses: ./.github/actions/preview_controller_label_cleanup
