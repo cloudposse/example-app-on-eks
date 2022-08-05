@@ -20,7 +20,7 @@ releases:
 # References:
 #   - https://github.com/cloudposse/charts/blob/master/incubator/monochart
 #
-- name: 'example-app'
+- name: '{{ requiredEnv "RELEASE_NAME" }}'
   labels:
     color: "{{ requiredEnv "COLOR" }}"
     preview: "true"
@@ -36,7 +36,7 @@ releases:
         tag: '{{ env "IMAGE_TAG" | default "0.1.0" }}'
         pullPolicy: Always
         #pullSecrets:
-        #  - "example-app-pull-secret-dockercfg "
+        #  - "{{ requiredEnv "RELEASE_NAME" }}-pull-secret-dockercfg "
       replicaCount: 5
       # Deployment configuration
       deployment:
