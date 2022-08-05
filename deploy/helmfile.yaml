@@ -9,6 +9,6 @@ helmfiles:
 #  - "releases/pull-secret.yaml"
   - path: "releases/app.yaml"
     values:
-    -
-      {{ .Values | toYaml }}
+      - test: test
+        {{ .Values | toYaml }}
 #  - "releases/istio.yaml"
