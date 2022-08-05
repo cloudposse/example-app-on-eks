@@ -136,7 +136,7 @@ jobs:
           image: ${{ needs.build.outputs.image }}
           image-tag: ${{ needs.build.outputs.tag }}
           operation: deploy
-          debug: true
+          debug: false
         env:
           COLOR: green
 
