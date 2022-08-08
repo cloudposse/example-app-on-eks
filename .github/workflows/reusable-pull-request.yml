@@ -24,6 +24,10 @@ on:
         required: true
         type: string
     secrets:
+      docker-login:
+        required: true
+      docker-password:
+        required: true
       github-private-actions-pat:
         required: true
 
@@ -84,7 +88,8 @@ jobs:
           organization: ${{ inputs.organization }}
           repository: ${{ inputs.repository }}
           registry: ${{ inputs.registry }}
-
+          login: ${{ secrets.docker-login }}
+          password: ${{ secrets.docker-password }}
     outputs:
       image: ${{ steps.build.outputs.image }}
       tag: ${{ steps.build.outputs.tag }}
@@ -131,6 +136,11 @@ jobs:
           image: ${{ needs.build.outputs.image }}
           image-tag: ${{ needs.build.outputs.tag }}
           operation: deploy
+          debug: false
+        env:
+          ISTIO_INSTALLED: false
+          COLOR: green
+          RELEASE_NAME: example-app-green
 
   destroy:
     runs-on: ["self-hosted"]
@@ -185,6 +195,11 @@ jobs:
           image: "<none>"
           image-tag: "<none>"
           operation: destroy
+          debug: false
+        env:
+          ISTIO_INSTALLED: false
+          COLOR: green
+          RELEASE_NAME: example-app-green
 
       - name: Cleanup label
         uses: ./.github/actions/preview_controller_label_cleanup

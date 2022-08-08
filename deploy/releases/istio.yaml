@@ -1,7 +1,7 @@
 repositories:
 # Kubernetes incubator repo of helm charts
 - name: "kubernetes-incubator"
-  url: "https://kubernetes-charts-incubator.storage.googleapis.com"
+  url: "https://charts.helm.sh/incubator"
 
 releases:
 #
@@ -14,6 +14,7 @@ releases:
   wait: true
   force: true
   recreatePods: false
+  installed: {{ env "ISTIO_INSTALLED" | default true }}
   values:
     - resources:
 
