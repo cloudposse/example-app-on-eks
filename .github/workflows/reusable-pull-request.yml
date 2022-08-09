@@ -103,41 +103,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Start stack
-        run: docker-compose -f codefresh/test/docker-compose.yml up -d
+      - name: Checkout Private actions
+        uses: actions/checkout@v3
+        with:
+          repository: cloudposse/actions-private
+          ref: main
+          token: ${{ secrets.github-private-actions-pat }}
+          path: .github/actions
 
-      - name: Test
-        run: |
-          DIR=$(pwd)
-          docker-compose -f codefresh/test/docker-compose.yml run -v ${DIR}:/app -w /app --entrypoint /bin/sh --rm app -- codefresh/test/test.sh
-
-      - name: Stop stacks
-        if: always()
-        run: docker-compose -f codefresh/test/docker-compose.yml down
-
-#      - name: Checkout Private actions
-#        uses: actions/checkout@v3
-#        with:
-#          repository: cloudposse/actions-private
-#          ref: main
-#          token: ${{ secrets.github-private-actions-pat }}
-#          path: .github/actions
-#
-#      - name: Build the stack
-#        run: docker-compose up -d
-#
-#
-#      - name: Build
-#        id: build
-#        uses: ./.github/actions/build
-#        with:
-#          organization: ${{ inputs.organization }}
-#          repository: ${{ inputs.repository }}
-#          registry: ${{ inputs.registry }}
-#          login: ${{ secrets.docker-login }}
-#          password: ${{ secrets.docker-password }}
-
-
+      - name: Tests
+        id: test
+        uses: ./.github/actions/docker-compose-tests-run
+        with:
+          file: codefresh/test/docker-compose.yml
+          service: app
+          command: codefresh/test/test.sh
 
   deploy:
     runs-on: ["self-hosted"]
