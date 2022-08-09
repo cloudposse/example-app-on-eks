@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   default:
-    uses: cloudposse/github-actions-workflows/dockerized-app/bleeding-edge.yml@main
+    uses: cloudposse/github-actions-workflows/.github/workflows/dockerized-app/bleeding-edge.yml@main
     with:
       organization: "${{ github.event.repository.owner.login }}"
       repository: "${{ github.event.repository.name }}"
