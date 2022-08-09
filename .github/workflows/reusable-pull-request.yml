@@ -107,7 +107,7 @@ jobs:
         run: docker-compose -f codefresh/test/docker-compose.yml up -d
 
       - name: Test
-        run: docker-compose run --entrypoint /bin/sh --rm app -- codefresh/test/test.sh
+        run: docker-compose -f codefresh/test/docker-compose.yml run --entrypoint /bin/sh --rm app -- codefresh/test/test.sh
 
       - name: Stop stacks
         run: docker-compose -f codefresh/test/docker-compose.yml down
