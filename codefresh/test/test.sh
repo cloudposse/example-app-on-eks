@@ -12,3 +12,5 @@ set -o pipefail
 
 
 curl -fsSL http://app:8080/ | grep "background-color: ${COLOR}"
+
+exit 1
