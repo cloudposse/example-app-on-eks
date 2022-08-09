@@ -2,11 +2,5 @@ version: '3'
 services:
   app:
     build: ../../
-    entrypoint: /bin/sh -c
-    command: codefresh/test/test.sh
-    env_file:
-      - test.env
-    environment:
-      - "COLOR=#0099ff"
     ports:
       - "8080:8080"

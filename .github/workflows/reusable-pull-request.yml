@@ -103,11 +103,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build the stack
+      - name: Start stack
         run: docker-compose -f codefresh/test/docker-compose.yml up -d
 
-#      - name: Test
-#        run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost:5000/
+      - name: Test
+        run: docker-compose run --entrypoint /bin/sh --rm app -- codefresh/test/test.sh
+
+      - name: Stop stacks
+        run: docker-compose -f codefresh/test/docker-compose.yml down
 
 #      - name: Checkout Private actions
 #        uses: actions/checkout@v3
