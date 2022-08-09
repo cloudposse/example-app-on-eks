@@ -27,6 +27,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   promote:
     runs-on: ["self-hosted"]
