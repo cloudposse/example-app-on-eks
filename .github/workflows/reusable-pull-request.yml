@@ -90,9 +90,48 @@ jobs:
           registry: ${{ inputs.registry }}
           login: ${{ secrets.docker-login }}
           password: ${{ secrets.docker-password }}
+
     outputs:
       image: ${{ steps.build.outputs.image }}
       tag: ${{ steps.build.outputs.tag }}
+
+  test:
+    runs-on: ["self-hosted"]
+    if: ${{ inputs.open }}
+    needs: [ build ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build the stack
+        run: docker-compose up -f codefresh/test/docker-compose.yml -d
+
+#      - name: Test
+#        run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost:5000/
+
+#      - name: Checkout Private actions
+#        uses: actions/checkout@v3
+#        with:
+#          repository: cloudposse/actions-private
+#          ref: main
+#          token: ${{ secrets.github-private-actions-pat }}
+#          path: .github/actions
+#
+#      - name: Build the stack
+#        run: docker-compose up -d
+#
+#
+#      - name: Build
+#        id: build
+#        uses: ./.github/actions/build
+#        with:
+#          organization: ${{ inputs.organization }}
+#          repository: ${{ inputs.repository }}
+#          registry: ${{ inputs.registry }}
+#          login: ${{ secrets.docker-login }}
+#          password: ${{ secrets.docker-password }}
+
+
 
   deploy:
     runs-on: ["self-hosted"]
@@ -103,7 +142,7 @@ jobs:
     environment:
       name: ${{ matrix.env }}
       url: ${{ steps.deploy.outputs.webapp-url }}
-    needs: [ context, build ]
+    needs: [ context, build, test ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
