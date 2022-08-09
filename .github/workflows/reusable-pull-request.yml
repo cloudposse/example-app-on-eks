@@ -107,7 +107,6 @@ jobs:
         run: docker-compose -f codefresh/test/docker-compose.yml up -d
 
       - name: Test
-        continue-on-error: true
         run: |
           DIR=$(pwd)
           docker-compose -f codefresh/test/docker-compose.yml run -v ${DIR}:/app -w /app --entrypoint /bin/sh --rm app -- codefresh/test/test.sh
