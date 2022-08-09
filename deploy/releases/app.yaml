@@ -37,7 +37,7 @@ releases:
         pullPolicy: Always
         #pullSecrets:
         #  - "{{ requiredEnv "RELEASE_NAME" }}-pull-secret-dockercfg "
-      replicaCount: 5
+      replicaCount: 2
       # Deployment configuration
       deployment:
         enabled: true
