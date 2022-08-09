@@ -38,11 +38,11 @@ jobs:
 
       - name: Login
         uses: docker/login-action@v2
-        if: ${{ contains(inputs.registry, '.amazonaws.com') || ( inputs.docker-login != '' && inputs.docker-password != '' ) }}
+        if: ${{ contains(inputs.registry, '.amazonaws.com') || ( secrets.docker-login != '' && secrets.docker-password != '' ) }}
         with:
           registry: ${{ inputs.registry }}
-          username: ${{ inputs.docker-login }}
-          password: ${{ inputs.docker-password }}
+          username: ${{ secrets.docker-login }}
+          password: ${{ secrets.docker-password }}
 
       - name: Promote Docker image
         uses: EuphoricSystems/docker-promote-image@1.0.0
