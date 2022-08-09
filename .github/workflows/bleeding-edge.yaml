@@ -12,7 +12,7 @@ jobs:
     with:
       organization: "${{ github.event.repository.owner.login }}"
       repository: "${{ github.event.repository.name }}"
-      registry: 252494810635.dkr.ecr.us-east-2.amazonaws.com
+      registry: registry.hub.docker.com
     secrets:
       docker-login: "${{ secrets.DOCKERHUB_USERNAME }}"
       docker-password: "${{ secrets.DOCKERHUB_PASSWORD }}"
