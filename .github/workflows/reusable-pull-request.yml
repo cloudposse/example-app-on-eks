@@ -112,7 +112,7 @@ jobs:
           docker-compose -f codefresh/test/docker-compose.yml run -v ${DIR}:/app -w /app --entrypoint /bin/sh --rm app -- codefresh/test/test.sh
 
       - name: Stop stacks
-        continue-on-error: true
+        if: {{ always() }}
         run: docker-compose -f codefresh/test/docker-compose.yml down
 
 #      - name: Checkout Private actions
