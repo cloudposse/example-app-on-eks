@@ -1,0 +1,19 @@
+name: Bleeding edge
+on:
+  push:
+    branches: [ master ]
+
+permissions:
+  contents: write
+
+jobs:
+  default:
+    uses: cloudposse/example-app/.github/workflows/reusable-bleeding-edge.yml@master
+    with:
+      organization: "${{ github.event.repository.owner.login }}"
+      repository: "${{ github.event.repository.name }}"
+      registry: 252494810635.dkr.ecr.us-east-2.amazonaws.com
+    secrets:
+      docker-login: "${{ secrets.DOCKERHUB_USERNAME }}"
+      docker-password: "${{ secrets.DOCKERHUB_PASSWORD }}"
+      github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
