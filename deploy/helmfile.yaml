@@ -1,5 +1,17 @@
-# Ordered list of releases. 
+# Ordered list of releases.
+environments:
+  default:
+  preview:
+  staging:
+  production:
+
 helmfiles:
 #  - "releases/pull-secret.yaml"
-  - "releases/app.yaml"
-  - "releases/istio.yaml"
+  - path: "releases/app.yaml"
+    values:
+      -
+{{ .Values | toYaml | indent 8 }}
+  - path: "releases/istio.yaml"
+    values:
+      -
+{{ .Values | toYaml | indent 8 }}

@@ -21,6 +21,11 @@ Example application for Codefresh CI/CD demonstrations.
 * Deployment audit trails using comment on every commit
 * Targeted Release Deployments using GitHub Releases
 
+## Github Actions
+
+1. Preview Environments for Every Pull Request
+
+
 ### Contact
 
 We'll gladly help you implement a powerful release engineering process.

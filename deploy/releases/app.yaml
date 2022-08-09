@@ -1,3 +1,15 @@
+environments:
+  default:
+    values:
+      - platform:
+          region: us-east-2
+          default_ingress_domain: example.com
+          default_alb_ingress_group: default
+  preview:
+  staging:
+  production:
+
+
 repositories:
 # Cloud Posse incubator repo of helm charts
 - name: "cloudposse-incubator"
@@ -57,6 +69,22 @@ releases:
       ingress:
         default:
           enabled: true
+          port: default
+{{ if eq .Values.platform.default_alb_ingress_group "alb-controller-ingress-group" }}
+          annotations:
+            external-dns.alpha.kubernetes.io/target: {{ .Values.platform.default_ingress_domain }}
+            alb.ingress.kubernetes.io/group.name: {{ .Values.platform.default_alb_ingress_group }}
+            external-dns.alpha.kubernetes.io/hostname: example-app.{{ .Values.platform.default_ingress_domain }}
+            kubernetes.io/ingress.class: alb
+            alb.ingress.kubernetes.io/scheme: internet-facing
+            alb.ingress.kubernetes.io/actions.ssl-redirect: '{"RedirectConfig":{"Port":"443","Protocol":"HTTPS","StatusCode":"HTTP_301"},"Type":"redirect"}'
+            alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+            alb.ingress.kubernetes.io/ssl-redirect: "443"
+            alb.ingress.kubernetes.io/target-type: ip
+            outputs.platform.cloudposse.com/webapp-url: "https://example-app.{{ .Values.platform.default_ingress_domain }}"
+          hosts:
+            "example-app.{{ .Values.platform.default_ingress_domain }}": /
+{{ else }}
           annotations:
             kubernetes.io/ingress.class: nginx
             kubernetes.io/tls-acme: "true"
@@ -65,12 +93,13 @@ releases:
             ### Required: APP_HOST;
             '{{ env "APP_HOST" }}': /
           tls:
-              ### Optional: APP_TLS_SECRET_NAME;
+            ### Optional: APP_TLS_SECRET_NAME;
             - secretName: '{{ env "APP_TLS_SECRET_NAME" | default (requiredEnv "COLOR" | printf "example-%s-server-tls") }}'
               hosts:
-              ### Required: APP_HOST;
-              - '{{ env "APP_HOST" }}'
-      
+                ### Required: APP_HOST;
+                - '{{ env "APP_HOST" }}'
+{{ end }}
+
       probes:
         # Probe that ensures service is healthy
         livenessProbe:
