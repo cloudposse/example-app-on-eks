@@ -1,0 +1,24 @@
+name: Release
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  default:
+    uses: cloudposse/example-app/.github/workflows/reusable-release.yml@master
+    with:
+      organization: "${{ github.event.repository.owner.login }}"
+      repository: "${{ github.event.repository.name }}"
+      registry: registry.hub.docker.com
+      version: ${{ github.event.release.tag_name }}
+    secrets:
+      docker-login: "${{ secrets.DOCKERHUB_USERNAME }}"
+      docker-password: "${{ secrets.DOCKERHUB_PASSWORD }}"
+      github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
