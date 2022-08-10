@@ -1,0 +1,19 @@
+name: Bleeding edge
+on:
+  push:
+    branches: [ master ]
+
+permissions:
+  contents: write
+
+jobs:
+  default:
+    uses: cloudposse/github-actions-workflows/.github/workflows/dockerized-app-bleeding-edge.yml@main
+    with:
+      organization: "${{ github.event.repository.owner.login }}"
+      repository: "${{ github.event.repository.name }}"
+      registry: registry.hub.docker.com
+    secrets:
+      docker-login: "${{ secrets.DOCKERHUB_USERNAME }}"
+      docker-password: "${{ secrets.DOCKERHUB_PASSWORD }}"
+      github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
