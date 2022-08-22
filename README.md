@@ -1,28 +1,24 @@
 # example-app
 
-Example application for Codefresh CI/CD demonstrations.
+
+
+Example application for CI/CD demonstrations with GitHub Actions.
 
 ## Release Engineering
 
-### Codefresh Pipelines 
-
-1. Preview Environments for Every Pull Request
-2. Release Pipeline for Staging and Production
-3. Deploy Pipeline
-
 ### Features
 
-* Blue/Green deployments with Istio
 * Deploy/Destroy environments only when labels added or removed
 * GitHub Status API Updates
-* Slack Notifications
-* Approval Steps
-* Deployment audit trails using comment on every commit
+* Approval Steps (Depends of repository settings)
+* Deployment audit trails with GitHub environments
 * Targeted Release Deployments using GitHub Releases
 
 ## Github Actions
 
 1. Preview Environments for Every Pull Request
+2. Bleeding edge pipeline that triggers on push into master, perform CI and deploy on dev
+3. Release Pipeline for Staging and Production
 
 
 ### Contact
