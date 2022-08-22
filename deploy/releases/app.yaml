@@ -83,7 +83,7 @@ releases:
             alb.ingress.kubernetes.io/target-type: ip
             outputs.platform.cloudposse.com/webapp-url: "https://example-app.{{ .Values.platform.default_ingress_domain }}"
           hosts:
-            "example-app.{{ .Values.platform.default_ingress_domain }}": /
+            "example-app.{{ .Values.platform.default_ingress_domain }}": /*
 {{ else }}
           annotations:
             kubernetes.io/ingress.class: nginx
