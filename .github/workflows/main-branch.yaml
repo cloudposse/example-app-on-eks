@@ -7,7 +7,7 @@ permissions:
   contents: write
 
 jobs:
-  default:
+  run:
     uses: cloudposse/github-actions-workflows/.github/workflows/dockerized-app-bleeding-edge.yml@main
     with:
       organization: "${{ github.event.repository.owner.login }}"
