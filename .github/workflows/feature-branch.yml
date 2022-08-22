@@ -1,4 +1,4 @@
-name: Pull Request
+name: Feature Branch
 on:
   pull_request:
     branches: [ 'master' ]
