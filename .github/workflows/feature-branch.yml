@@ -9,7 +9,7 @@ permissions:
   deployments: write
 
 jobs:
-  default:
+  pr:
     uses: cloudposse/github-actions-workflows/.github/workflows/dockerized-app-pull-request.yml@main
     with:
       organization: "${{ github.event.repository.owner.login }}"
