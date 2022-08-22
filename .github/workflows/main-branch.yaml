@@ -1,4 +1,4 @@
-name: Bleeding edge
+name: Main Branch
 on:
   push:
     branches: [ master ]
