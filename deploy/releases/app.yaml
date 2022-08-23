@@ -44,7 +44,7 @@ releases:
         strategy:
           type: "RollingUpdate"
           rollingUpdate:
-            maxUnavailable: 2
+            maxUnavailable: 1
         revisionHistoryLimit: 10
 
       # Configuration Settings
