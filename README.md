@@ -2,9 +2,6 @@
 
 
 
-
-
-
 Example application for CI/CD demonstrations with GitHub Actions.
 
 ## Release Engineering
