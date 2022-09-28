@@ -11,7 +11,3 @@ helmfiles:
     values:
       -
 {{ .Values | toYaml | indent 8 }}
-  - path: "releases/istio.yaml"
-    values:
-      -
-{{ .Values | toYaml | indent 8 }}
