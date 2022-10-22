@@ -6,7 +6,6 @@ environments:
   production:
 
 helmfiles:
-#  - "releases/pull-secret.yaml"
   - path: "releases/app.yaml"
     values:
       -
