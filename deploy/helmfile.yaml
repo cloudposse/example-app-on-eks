@@ -6,8 +6,7 @@ environments:
   production:
 
 helmfiles:
-#  - "releases/pull-secret.yaml"
-  - path: "./releases/app.yaml"
+  - path: "releases/app.yaml"
     values:
       -
 {{ .Values | toYaml | indent 8 }}

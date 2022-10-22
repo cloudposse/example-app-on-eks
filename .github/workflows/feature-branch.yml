@@ -7,6 +7,8 @@ on:
 permissions:
   pull-requests: write
   deployments: write
+  id-token: write
+  contents: read
 
 jobs:
   perform:
@@ -14,11 +16,10 @@ jobs:
     with:
       organization: "${{ github.event.repository.owner.login }}"
       repository: "${{ github.event.repository.name }}"
-      registry: registry.hub.docker.com
       open: ${{ github.event.pull_request.state == 'open' }}
       labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
       ref: ${{ github.event.pull_request.head.ref  }}
     secrets:
-      docker-login: "${{ secrets.DOCKERHUB_USERNAME }}"
-      docker-password: "${{ secrets.DOCKERHUB_PASSWORD }}"
       github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
+      registry: "${{ secrets.ECR_REGISTRY }}"
+      secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"

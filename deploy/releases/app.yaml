@@ -20,9 +20,8 @@ releases:
 # References:
 #   - https://github.com/cloudposse/charts/blob/master/incubator/monochart
 #
-- name: '{{ requiredEnv "RELEASE_NAME" }}'
+- name: 'example-app'
   labels:
-    color: "{{ requiredEnv "COLOR" }}"
     preview: "true"
   chart: "cloudposse-incubator/monochart"
   version: "0.22.0"
@@ -30,13 +29,10 @@ releases:
   force: true
   recreatePods: false
   values:
-    - fullnameOverride: "example-{{ requiredEnv "COLOR" }}"
-      image:
+    - image:
         repository: '{{ env "IMAGE_NAME" | default "cloudposse/example-app" }}'
         tag: '{{ env "IMAGE_TAG" | default "0.1.0" }}'
         pullPolicy: Always
-        #pullSecrets:
-        #  - "{{ requiredEnv "RELEASE_NAME" }}-pull-secret-dockercfg "
       replicaCount: 2
       # Deployment configuration
       deployment:
@@ -51,11 +47,6 @@ releases:
       configMaps:
         default:
           enabled: true
-          env:
-            # Color to deploy
-            #COLOR: "#0099ff" # Blue
-            #COLOR: "#009900"  # Green
-            COLOR: "{{ env "COLOR" }}"
 
       # Service endpoint 
       service:
