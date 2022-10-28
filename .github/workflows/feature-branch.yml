@@ -23,3 +23,6 @@ jobs:
       github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
       registry: "${{ secrets.ECR_REGISTRY }}"
       secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
+      organization: ${{ secrets.SPACELIFT_ORGANZATION }}
+      api_key_id: ${{ secrets.SPACELIFT_API_KEY_ID }}
+      api_key_secret: ${{ secrets.SPACELIFT_API_KEY_SECRET }}
