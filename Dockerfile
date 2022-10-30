@@ -27,7 +27,5 @@ COPY public/ /app/public/
 # Install the app
 COPY --from=builder /src/example-app /app/
 
-
-
 # Define the entrypoint
 ENTRYPOINT ["./example-app"]
