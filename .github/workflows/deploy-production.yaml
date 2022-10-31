@@ -15,7 +15,7 @@ jobs:
   deploy:
     uses: cloudposse/github-actions-workflows/.github/workflows/cd-ecs.yml@deploy-ecs
     with:
-      image: ${{ secrets.registry }}/${{ inputs.organization }}/${{ inputs.repository }}
+      image: ${{ secrets.ECR_REGISTRY }}/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}
       tag: ${{ inputs.version }}
       repository: ${{ github.event.repository.name }}
       spacelift-organization: ${{ github.event.repository.owner.login }}
