@@ -12,16 +12,16 @@ permissions:
   contents: write
 
 jobs:
-  deploy:
-    uses: cloudposse/github-actions-workflows/.github/workflows/cd-ecs.yml@deploy-ecs
+  perform:
+    uses: cloudposse/github-actions-workflows/.github/workflows/dockerized-ecs-app-deploy-production.yml@deploy-ecs
     with:
-      image: ${{ secrets.ECR_REGISTRY }}/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}
-      tag: ${{ inputs.version }}
-      repository: ${{ github.event.repository.name }}
+      organization: "${{ github.event.repository.owner.login }}"
+      repository: "${{ github.event.repository.name }}"
       spacelift-organization: ${{ github.event.repository.owner.login }}
-      environment: production
+      version: ${{ inputs.version }}
     secrets:
       github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
+      registry: "${{ secrets.ECR_REGISTRY }}"
       secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
       spacelift-api-key-id: ${{ secrets.SPACELIFT_API_KEY_ID }}
       spacelift-api-key-secret: ${{ secrets.SPACELIFT_API_KEY_SECRET }}
