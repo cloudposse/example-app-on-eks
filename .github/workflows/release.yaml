@@ -13,7 +13,6 @@ jobs:
     with:
       organization: "${{ github.event.repository.owner.login }}"
       repository: "${{ github.event.repository.name }}"
-      spacelift-organization: ${{ github.event.repository.owner.login }}
       version: ${{ github.event.release.tag_name }}
     secrets:
       github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"

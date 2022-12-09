@@ -19,7 +19,6 @@ jobs:
       open: ${{ github.event.pull_request.state == 'open' }}
       labels: ${{ toJSON(github.event.pull_request.labels.*.name) }}
       ref: ${{ github.event.pull_request.head.ref  }}
-      spacelift-organization: ${{ github.event.repository.owner.login }}
     secrets:
       github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
       registry: "${{ secrets.ECR_REGISTRY }}"
