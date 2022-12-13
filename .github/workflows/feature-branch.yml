@@ -12,7 +12,6 @@ permissions:
 
 jobs:
   do:
-    name: ""
     uses: cloudposse/github-actions-workflows/.github/workflows/dockerized-app-feature-branch.yml@main
     with:
       organization: "${{ github.event.repository.owner.login }}"
