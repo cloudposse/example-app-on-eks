@@ -1,0 +1,56 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+
+# Name of this project
+name: example-app-on-eks
+
+# Tags of this project
+tags:
+  - example-app
+  - github-action
+  - Docker
+  - ECR
+  - EKS
+  - Helmfile
+  - CI/CD
+
+# Logo for this project
+#logo: docs/logo.png
+
+# License of this project
+license: "APACHE2"
+
+# Canonical GitHub repo
+github_repo: cloudposse/example-app-on-eks
+
+# Badges to display
+badges:
+  - name: "Latest Release"
+    image: "https://img.shields.io/github/release/cloudposse/example-app-on-eks.svg"
+    url: "https://github.com/cloudposse/example-app-on-eks/releases/latest"
+  - name: "Slack Community"
+    image: "https://slack.cloudposse.com/badge.svg"
+    url: "https://slack.cloudposse.com"
+
+related:
+  - name: "github-actions-workflows"
+    description: "Reusable workflows for different types of projects"
+    url: "https://github.com/cloudposse/github-actions-workflows"
+
+# Short description of this project
+description: |-
+  Example Dockerized application deployed on EKS with Helmfile.
+
+introduction: |-
+  * [Docker](https://docs.docker.com/engine/reference/builder/) for developing, shipping, and running,
+  * [ECR](https://aws.amazon.com/ecr/) to store the Docker images
+  * [EKS](https://aws.amazon.com/eks) for running application in scale
+  * [Helmfile](https://github.com/roboll/helmfile) as declarative deploy manifest
+
+# Contributors to this project
+contributors:
+  - name: "Igor Rodionov"
+    github: "goruha"
