@@ -77,7 +77,7 @@ releases:
             "example-app-pr-{{ .Namespace }}.{{ .Values.platform.default_ingress_domain }}": /*
         {{- else }}
             external-dns.alpha.kubernetes.io/hostname: example-app.{{ .Values.platform.default_ingress_domain }}
-            outputs.platform.cloudposse.com/webapp-url: "https://example-app.{{ .Values.platform.default_ingress_domain }}/dashboard"
+            outputs.webapp-url: "https://example-app.{{ .Values.platform.default_ingress_domain }}/dashboard"
           hosts:
             "example-app.{{ .Values.platform.default_ingress_domain }}": /*
         {{- end }}
