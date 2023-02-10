@@ -20,7 +20,7 @@ releases:
 # References:
 #   - https://github.com/cloudposse/charts/blob/master/incubator/monochart
 #
-- name: 'example-app'
+- name: 'example-app-helm'
   labels:
     preview: "true"
   chart: "cloudposse-incubator/monochart"
