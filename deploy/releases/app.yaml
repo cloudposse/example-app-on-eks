@@ -24,7 +24,7 @@ releases:
   labels:
     preview: "true"
   chart: "cloudposse-incubator/monochart"
-  version: "0.22.0"
+  version: "0.26.0"
   wait: true
   force: true
   recreatePods: false
