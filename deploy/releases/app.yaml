@@ -72,7 +72,7 @@ releases:
             alb.ingress.kubernetes.io/target-type: ip
         {{- if eq .Environment.Name "preview" }}
             external-dns.alpha.kubernetes.io/hostname: example-app-pr-{{ .Namespace }}.{{ .Values.platform.default_ingress_domain }}
-            outputs.platform.cloudposse.com/webapp-url: "https://example-app-pr-{{ .Namespace }}.{{ .Values.platform.default_ingress_domain }}/dashboard"
+            outputs.webapp-url: "https://example-app-pr-{{ .Namespace }}.{{ .Values.platform.default_ingress_domain }}/dashboard"
           hosts:
             "example-app-pr-{{ .Namespace }}.{{ .Values.platform.default_ingress_domain }}": /*
         {{- else }}
