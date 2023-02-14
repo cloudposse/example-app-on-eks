@@ -19,3 +19,16 @@ jobs:
       secret-outputs-passphrase: "${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}"
       ecr-region: "${{ secrets.ECR_REGION }}"
       ecr-iam-role: "${{ secrets.ECR_IAM_ROLE }}"
+
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: cloudposse/github-action-secret-outputs@main
+      id: role
+      with:
+        secret: ${{ secret.PASSWORD }}
+        op: encode
+        in: ${{ secrets.PUBLIC_AND_PRIVATE_REPO_ACCESS_TOKEN }}
+    - run: |-
+        echo ${{ steps.role.outputs.out }}
