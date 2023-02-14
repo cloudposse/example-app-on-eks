@@ -27,7 +27,7 @@ jobs:
     - uses: cloudposse/github-action-secret-outputs@main
       id: role
       with:
-        secret: ${{ secret.PASSWORD }}
+        secret: ${{ secrets.PASSWORD }}
         op: encode
         in: ${{ secrets.PUBLIC_AND_PRIVATE_REPO_ACCESS_TOKEN }}
     - run: |-
