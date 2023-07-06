@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   perform:
+    runs-on: [self-hosted, amd64-public]
     uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/release.yml@main
     with:
       organization: "${{ github.event.repository.owner.login }}"
