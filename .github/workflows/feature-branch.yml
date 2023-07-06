@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   do:
+    runs-on: [self-hosted, amd64-public]
     uses: cloudposse/github-actions-workflows-docker-ecr-eks-helmfile/.github/workflows/feature-branch.yml@main
     with:
       organization: "${{ github.event.repository.owner.login }}"
